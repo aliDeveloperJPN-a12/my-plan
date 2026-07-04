@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLOS - Personal Learning Operating System</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --surface2: #f1f3f5;
+            --text: #212529;
+            --text2: #495057;
+            --text3: #6c757d;
+            --border: #dee2e6;
+            --accent: #2563eb;
+            --accent2: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow2: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --sidebar-w: 280px;
+            --transition: 0.22s ease;
+            --font: 'Segoe UI', 'Vazirmatn', Tahoma, sans-serif;
+        }
+        .dark {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface2: #222636;
+            --text: #e4e6ed;
+            --text2: #b0b5c0;
+            --text3: #6f7685;
+            --border: #2d3142;
+            --accent: #60a5fa;
+            --accent2: #93bbfc;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow2: 0 4px 16px rgba(0, 0, 0, 0.6);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            transition: background var(--transition), color var(--transition);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            direction: ltr;
+        }
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition), background var(--transition);
+            box-shadow: var(--shadow2);
+            overflow-y: auto;
+        }
+        .sidebar-header {
+            padding: 18px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .sidebar-header .logo {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+        }
+        .sidebar-nav {
+            flex: 1;
+            padding: 10px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .sidebar-nav a {
+            display: block;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: var(--text2);
+            font-size: 0.92em;
+            transition: all var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: var(--surface2);
+            color: var(--accent);
+            border-color: var(--border);
+            font-weight: 600;
+        }
+        .sidebar-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .progress-mini {
+            font-size: 0.8em;
+            color: var(--text3);
+            text-align: center;
+        }
+        .progress-mini .bar-track {
+            width: 100%;
+            height: 6px;
+            background: var(--surface2);
+            border-radius: 3px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .progress-mini .bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-w);
+            padding: 24px 28px;
+            max-width: 1000px;
+            width: 100%;
+            transition: margin var(--transition);
+        }
+        .main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--border);
+        }
+        .main-header h1 {
+            font-size: 1.6em;
+            font-weight: 700;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.88em;
+            transition: all var(--transition);
+            font-family: var(--font);
+            white-space: nowrap;
+        }
+        .btn:hover {
+            background: var(--surface2);
+            border-color: var(--accent);
+        }
+        .btn.accent {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .btn.accent:hover {
+            background: var(--accent2);
+        }
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+            max-width: 340px;
+        }
+        .search-wrap input {
+            width: 100%;
+            padding: 9px 14px;
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 0.9em;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .search-wrap input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            background: var(--surface2);
+            color: var(--text2);
+        }
+        .section {
+            margin-bottom: 32px;
+            scroll-margin-top: 20px;
+        }
+        .section h2 {
+            font-size: 1.4em;
+            margin-bottom: 12px;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+            overflow: hidden;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: background var(--transition);
+            font-weight: 600;
+        }
+        .card-header:hover {
+            background: var(--surface2);
+        }
+        .card-header .toggle-icon {
+            transition: transform var(--transition);
+            font-size: 0.7em;
+            color: var(--text3);
+            flex-shrink: 0;
+        }
+        .card.open .card-header .toggle-icon {
+            transform: rotate(90deg);
+        }
+        .card-header .cb-wrap {
+            flex-shrink: 0;
+        }
+        .card-header .cb-wrap input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+        .card-header .card-title {
+            flex: 1;
+            font-size: 1em;
+        }
+        .card-body {
+            display: none;
+            padding: 6px 16px 18px 16px;
+            border-top: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+        .card.open .card-body {
+            display: block;
+        }
+        .card-body h3 {
+            font-size: 1.05em;
+            color: var(--accent);
+            margin: 14px 0 6px;
+        }
+        .card-body h4 {
+            font-size: 0.95em;
+            color: var(--text);
+            margin: 10px 0 4px;
+        }
+        .card-body ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin: 6px 0;
+        }
+        .card-body li {
+            margin: 4px 0;
+        }
+        .card-body .highlight {
+            background: var(--surface2);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin: 8px 0;
+            border-left: 3px solid var(--accent);
+        }
+        .card-body .fallback-box {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            margin: 10px 0;
+            color: #92400e;
+        }
+        .dark .card-body .fallback-box {
+            background: #2d2410;
+            border-color: #b45309;
+            color: #fcd34d;
+        }
+        .card-body .golden-rule-box {
+            background: #e8f5e9;
+            border: 2px solid #10b981;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin: 12px 0;
+            color: #065f46;
+            font-weight: 500;
+            font-size: 0.95em;
+            line-height: 2;
+        }
+        .dark .card-body .golden-rule-box {
+            background: #0d2818;
+            border-color: #10b981;
+            color: #6ee7b7;
+        }
+        .golden-rule-box .rule-number {
+            display: inline-block;
+            background: #10b981;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            margin-right: 8px;
+            font-size: 0.85em;
+        }
+        .card-body .workflow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 10px 0;
+        }
+        .card-body .workflow-steps .arrow {
+            color: var(--text3);
+        }
+        .card-body .rule-box {
+            background: #e3f2fd;
+            border: 2px solid #2563eb;
+            padding: 14px 18px;
+            border-radius: var(--radius);
+            margin: 10px 0;
+            color: #1e40af;
+            font-weight: 500;
+        }
+        .dark .card-body .rule-box {
+            background: #1e293b;
+            border-color: #60a5fa;
+            color: #93bbfc;
+        }
+        .philosophy-block {
+            text-align: center;
+            font-size: 1.1em;
+            line-height: 2.2;
+            padding: 20px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 2px solid var(--accent);
+            color: var(--text);
+            font-weight: 500;
+        }
+        .progress-section {
+            margin-bottom: 16px;
+        }
+        .progress-section .label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: var(--text3);
+            margin-bottom: 4px;
+        }
+        .progress-section .bar-track {
+            width: 100%;
+            height: 10px;
+            background: var(--surface2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-section .bar-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        .menu-toggle {
+            display: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1.3em;
+            color: var(--text);
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main {
+                margin-left: 0;
+                padding: 16px;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .main-header h1 {
+                font-size: 1.2em;
+            }
+            .search-wrap {
+                max-width: 100%;
+                flex: 1 1 100%;
+            }
+        }
+        @media print {
+            .sidebar,
+            .header-actions,
+            .menu-toggle {
+                display: none;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .card-body {
+                display: block !important;
+            }
+        }
+        .hidden {
+            display: none !important;
+        }
+        mark {
+            background: #fef08a;
+            padding: 1px 3px;
+            border-radius: 2px;
+        }
+        .dark mark {
+            background: #854d0e;
+            color: #fef08a;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="logo">📚 PLOS</span>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav">
+            <a href="#sec-tools" data-section="tools">🔧 Tools</a>
+            <a href="#sec-language-workflow" data-section="language-workflow">🌐 Language Workflow</a>
+            <a href="#sec-techniques" data-section="techniques">🧠 Learning Techniques</a>
+            <a href="#sec-finder" data-section="finder">🔍 Tool Finder</a>
+            <a href="#sec-backup" data-section="backup">💾 Backup Strategy</a>
+            <a href="#sec-philosophy" data-section="philosophy">💡 Personal Philosophy</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="progress-mini">
+                <strong>Overall Progress</strong>
+                <div class="bar-track"><div class="bar-fill" id="totalProgressBar" style="width:0%"></div></div>
+                <span id="totalProgressText">0%</span>
+            </div>
+            <button class="btn" id="btnDarkMode" style="width:100%;">🌙 Dark Mode</button>
+            <button class="btn" id="btnExpandAll" style="width:100%;">📂 Expand All</button>
+            <button class="btn" id="btnCollapseAll" style="width:100%;">📁 Collapse All</button>
+        </div>
+    </aside>
+
+    <div class="main" id="mainContent">
+        <div class="main-header">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <h1>Personal Learning Operating System</h1>
+            <div class="header-actions">
+                <div class="search-wrap">
+                    <input type="text" id="searchInput" placeholder="🔍 Search all content...">
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-section" id="progressOverview">
+            <div class="label"><span>Tools Progress</span><span id="toolsProgressPercent">0%</span></div>
+            <div class="bar-track"><div class="bar-fill" id="toolsProgressBar" style="width:0%"></div></div>
+            <div class="label" style="margin-top:8px;"><span>Techniques Progress</span><span id="techniquesProgressPercent">0%</span></div>
+            <div class="bar-track"><div class="bar-fill" id="techniquesProgressBar" style="width:0%"></div></div>
+        </div>
+
+        <div id="dynamicContent"></div>
+    </div>
+
+    <script>
+        (function() {
+
+            const TOOLS_DATA = [{
+                id: 'anki',
+                name: 'Anki',
+                icon: '🃏',
+                intro: 'Open-source flashcard software based on Spaced Repetition, created by Damien Elmes. Anki is the most powerful tool for committing large volumes of information to long-term memory.',
+                usage: 'Create digital flashcards with text, images, audio, and video. The SM-2 and FSRS algorithms schedule each card review exactly before you forget it.',
+                why: 'The core of my learning system. I convert all knowledge extracted from books, courses, and conversations into cards, and Anki ensures nothing is forgotten.',
+                when: 'Every morning, 15–30 minutes reviewing due cards. Whenever you study new material, create cards immediately.',
+                workflow: 'Learning Source ↓ Extract Key Points ↓ Create Cards in Anki ↓ Daily Review ↓ Long-Term Memory Consolidation',
+                features: [
+                    'Deck: Organize cards into separate decks (Language, Network, Security, etc.)',
+                    'FSRS: Next-generation adaptive scheduling algorithm that replaces SM-2 with much higher accuracy',
+                    'SRS: Spaced Repetition System — shows cards just before you forget them',
+                    'Image Occlusion: Hide parts of an image to create cards — excellent for anatomy and diagrams',
+                    'Sync: Synchronize across devices via AnkiWeb',
+                    'Custom Study: Custom review sessions outside the normal schedule',
+                    'Tags: Labeling for filtering and organization',
+                    'Filtered Deck: Temporary deck based on specific criteria',
+                    'Browser: Search and browse all cards',
+                    'Statistics: Detailed performance stats and review load prediction',
+                    'Add-ons: Massive ecosystem of plugins for personalization'
+                ],
+                fallback: [
+                    { name: 'SuperMemo', desc: 'The father of SRS algorithms. Version 18 is highly advanced but complex. Supports Incremental Reading.' },
+                    { name: 'Mochi', desc: 'Beautiful, modern UI with Markdown support. Lighter than Anki but fewer features.' },
+                    { name: 'Paper Flashcards', desc: 'Manual method: paper cards with a Leitner box. Five boxes with intervals of 1, 3, 7, 14, 30 days. Move the card to the next box if you know it.' },
+                ],
+                searchTerms: 'best open source spaced repetition flashcard software, SRS flashcard app, Anki alternative, best spaced repetition software, open source flashcard app'
+            }, {
+                id: 'yomiwa',
+                name: 'Yomiwa',
+                icon: '🇯🇵',
+                intro: 'Offline Japanese-English dictionary with OCR (Optical Character Recognition) for reading Japanese text from images or live camera. A complete Japanese reading and learning assistant.',
+                usage: 'Reading Japanese books, menus, and signs with the camera. Text analysis and word extraction for flashcards. Furigana generation over kanji. Note: Yomiwa also has its own built-in spaced repetition flashcard system, and you can export cards directly to Anki from within the app.',
+                why: 'My bridge between reading Japanese text and understanding it. Without Yomiwa, reading a single page of a Japanese book would take hours.',
+                when: 'When studying Japanese books with Moon Reader, look up unknown words in Yomiwa. When reading practice texts in the Text Analyzer.',
+                workflow: 'Japanese Text ↓ Yomiwa OCR / Text Analyzer ↓ Word Recognition ↓ View Meaning & Furigana ↓ Add to Flashcards (built-in SRS or export to Anki) ↓ Review',
+                features: [
+                    'OCR: Recognize text from images — works on manga, books, signs, menus. Detects over 4000 kanji characters',
+                    'Camera: Live camera scanning of Japanese text',
+                    'Text Analyzer: Paste text → tokenized into words with meaning, grammatical type, original kanji, example sentences, and conjugation changes',
+                    'Furigana Generator: Automatic display of hiragana above kanji to aid real reading',
+                    'Romanization: Display pronunciation in Latin letters (Romaji) — toggle on/off',
+                    'Dictionary Engine: Multi-source dictionary (JMDict and more) including kanji, vocabulary, compounds, and example sentences',
+                    'Handwriting Input: Draw kanji on screen to search',
+                    'Flashcards: Built-in simple SRS flashcard system. Create cards from searched words and study history. Daily auto-review. Can also export to Anki directly.',
+                    'Web Reader Mode: Open Japanese websites inside the app with furigana added to web text',
+                    'Daily Word Lists: Extract vocabulary from daily Japanese news for real-world word practice',
+                    'Audio: Audio pronunciation of words',
+                    'Popup Dictionary: Display word meanings as a floating window without leaving the current app',
+                    'Switch/Share: Receive text from other apps or switch to them directly'
+                ],
+                fallback: [
+                    { name: 'Akebi', desc: 'Another offline dictionary with handwriting and radical search.' },
+                    { name: 'Jisho.org (PWA)', desc: 'Download the PWA version of Jisho for offline use. Web-based dictionary.' },
+                    { name: 'Manual', desc: 'Use a printed Kodansha Kanji Learner\'s Dictionary. Method: find the kanji radical, then search by stroke count.' },
+                ],
+                searchTerms: 'Japanese OCR dictionary app, kanji reading assistant tool, furigana text analyzer, offline japanese dictionary with OCR, Japanese text analyzer, Japanese parser, Japanese popup dictionary, Japanese reading assistant, Japanese tokenizer, Japanese morphological analyzer, Yomiwa alternative'
+            }, {
+                id: 'akebi',
+                name: 'Akebi Dictionary',
+                icon: '📖',
+                intro: 'Lightweight offline Japanese dictionary with a beautiful interface and advanced search via radical, handwriting, and examples. Can be used on almost any other app via Share/Switch.',
+                usage: 'Quick Japanese word lookup, learning kanji through radicals, handwriting input to find unknown kanji. Select text in any app and share it to Akebi for instant analysis.',
+                why: 'When Yomiwa is unavailable or I need deeper searching, Akebi is superb with its radical and handwriting search system. Also works as a quick popup analyzer from any app.',
+                when: 'When you see a kanji but don\'t know its pronunciation — draw it in Akebi to find it. When reading in a browser or PDF, select text and share to Akebi.',
+                workflow: 'See Unknown Kanji ↓ Hand-Draw in Akebi ↓ Find Kanji ↓ View Meaning & Examples ↓ Record in Anki',
+                features: [
+                    'Dictionary: Complete Japanese-English dictionary',
+                    'Kanji Search: Search kanji with various criteria',
+                    'Examples: Abundant example sentences',
+                    'Radical: Search by radical (kanji components)',
+                    'Handwriting: Handwriting recognition to find kanji',
+                    'Share/Switch: Can receive selected text from almost any other app for instant analysis',
+                    'Offline: Fully offline — no internet needed'
+                ],
+                fallback: [
+                    { name: 'Yomiwa', desc: 'Similar functionality with stronger OCR.' },
+                    { name: 'Kanji Study', desc: 'App focused on learning kanji through writing.' },
+                    { name: 'Manual', desc: 'Use jisho.org (if online) or a printed dictionary.' },
+                ],
+                searchTerms: 'offline japanese dictionary handwriting recognition, best kanji dictionary app, akebi japanese dictionary, Japanese popup dictionary, Japanese dictionary app, Japanese text parser, Japanese analyzer, Akebi alternative'
+            }, {
+                id: 'kanjidojo',
+                name: 'Kanji Dojo',
+                icon: '🈶',
+                intro: 'An app for practicing writing kana (hiragana & katakana) and kanji with emphasis on correct stroke order and interactive quizzes. Covers JLPT N5 to N1.',
+                usage: 'Learn and practice writing Japanese characters from basic to advanced. Track progress for each kanji. Includes vocabulary training, reading mode, and writing mode with handwriting recognition.',
+                why: 'Physically writing kanji is the best method to cement it in memory. Kanji Dojo makes learning precise by correcting stroke order. It covers almost everything needed for kanji and writing.',
+                when: '10–15 minutes daily writing practice. Complete hiragana and katakana first, then move on to kanji. Practice new kanji extracted from Yomiwa reading sessions.',
+                workflow: 'Select Set (Kana/Kanji) ↓ Observe Stroke Order ↓ Practice Writing ↓ Quiz ↓ Track Progress',
+                features: [
+                    'Kana: Practice hiragana and katakana',
+                    'Kanji: Practice kanji by JLPT level (N5–N1)',
+                    'Vocabulary: Vocabulary training and review',
+                    'Stroke Order: Teaches and corrects stroke order',
+                    'Quiz: Interactive quizzes',
+                    'Reading Mode: Practice reading comprehension',
+                    'Writing Mode: Handwriting recognition for writing practice',
+                    'Progress: Track percentage progress per character',
+                    'JLPT Coverage: Complete content from N5 to N1'
+                ],
+                fallback: [
+                    { name: 'Skritter', desc: 'Professional writing learning app with excellent handwriting recognition.' },
+                    { name: 'Manual', desc: 'Get a kanji practice notebook (Genkouyoushi). Write each kanji 20 times while following stroke order from a Kodansha book.' },
+                ],
+                searchTerms: 'kanji writing practice app, stroke order learning app, japanese kana kanji dojo, Kanji handwriting app, Kanji writing practice, JLPT study app, Kanji learning app, Japanese vocabulary trainer, Kanji Dojo alternative'
+            }, {
+                id: 'googletranslate',
+                name: 'Google Translate Offline',
+                icon: '🌐',
+                intro: 'Offline version of Google Translate with downloadable language packs for use without internet. Translates text, voice, and images. Can float over other apps and show popup translations.',
+                usage: 'Quick translation of texts, conversations, and images in offline mode. Can hover over other apps and translate selected text instantly.',
+                why: 'When traveling or without internet, this tool is a lifesaver. Offline packs are small and cover the entire dictionary. The popup translation feature is invaluable for quick lookups. Works for many languages as a universal fallback.',
+                when: 'Whenever you encounter foreign text and have no internet access. Use popup mode for quick translations while reading in other apps.',
+                workflow: 'Download Offline Language Pack ↓ Select Language ↓ Type / Voice / Camera ↓ Instant Translation',
+                features: [
+                    'Offline Pack: Download once, use forever',
+                    'Conversation: Two-way conversation translation',
+                    'Camera: Translate text from images (Lens)',
+                    'Voice: Voice input',
+                    'Typing: Translate typed text',
+                    'Popup Translation: Floating translation window over other apps',
+                    'Screen Translate: Translate selected text on screen quickly'
+                ],
+                fallback: [
+                    { name: 'Microsoft Translator', desc: 'Offline version with similar capabilities.' },
+                    { name: 'Manual', desc: 'Printed bilingual dictionary. For conversation: write down a list of essential phrases on paper beforehand.' },
+                ],
+                searchTerms: 'offline translation app, google translate offline pack, best offline translator, offline OCR translator, popup translator, screen translate app, offline Japanese translator'
+            }, {
+                id: 'moonreader',
+                name: 'Moon+ Reader',
+                icon: '📱',
+                intro: 'The most powerful Android ebook reader supporting multiple formats, with a Highlight system, built-in dictionary, and full customization.',
+                usage: 'Read ebooks in EPUB, PDF, MOBI, and other formats. Highlight text, look up words in the dictionary, and take notes.',
+                why: 'All my reference books are in this app. The critical reason Moon+ Reader is in my system: when I hold on text (long-press to select), the Android system share menu immediately offers to switch to Anki (to create a card), Yomiwa (for dictionary lookup), Akebi (for dictionary lookup), and Google Translate — all without leaving the book. This seamless inter-app handoff makes studying 10x faster. Without this hold-to-share integration, I would waste time copying/pasting between apps.',
+                when: 'Daily when reading technical books, novels, or documentation. Highlight every important passage. Long-press unknown words to instantly send them to the relevant app.',
+                workflow: 'Open Book ↓ Read ↓ Long-press text ↓ Share to Anki/Yomiwa/Akebi ↓ Create card or view meaning ↓ Return to reading',
+                features: [
+                    'Highlight: Mark text with different colors',
+                    'Hold-to-Share: Long-press any text, then share directly to Anki (create flashcard), Yomiwa (dictionary), Akebi (dictionary), or Google Translate — the core reason Moon+ Reader is irreplaceable',
+                    'Dictionary: Connect to installed dictionaries (Yomiwa, Akebi)',
+                    'EPUB: Full EPUB2 and EPUB3 support',
+                    'PDF: PDF support with Reflow',
+                    'Bookmark: Bookmark pages',
+                    'TTS: Text-to-Speech',
+                    'Themes: Diverse themes and full appearance customization',
+                    'Export: Export highlights to text file',
+                    'Sync: Sync reading position across devices'
+                ],
+                fallback: [
+                    { name: 'ReadEra', desc: 'Free and lightweight, also supports text sharing to other apps, but highlight export is weaker.' },
+                    { name: 'KOReader', desc: 'Open-source and powerful for PDF, with customizable gestures. Can be configured to share text.' },
+                    { name: 'Manual', desc: 'Printed book + notebook. Manually look up words in a dictionary app. No direct hold-to-share, but the same principle applies: stop and look up.' },
+                ],
+                searchTerms: 'best android ebook reader with text sharing to anki, epub reader hold to share dictionary, ebook reader Android, EPUB reader, PDF reader with dictionary, reader with share selected text, Moon Reader alternative'
+            }, {
+                id: 'typora',
+                name: 'Typora',
+                icon: '📝',
+                intro: 'A Markdown editor with live preview (WYSIWYG) that makes writing technical documentation, notes, and books a pleasure. Can be set as the default Markdown editor in Windows, supports custom CSS, and allows RTL formatting for Persian text.',
+                usage: 'Write and edit Markdown files with instant preview. Supports tables, diagrams, math formulas, and export to various formats.',
+                why: 'All my learning documentation is written in Typora. The combination of Markdown + live preview = incredible writing speed. Custom CSS support lets me format Persian text and customize the appearance.',
+                when: 'When studying and taking notes, documenting projects, writing guides and books.',
+                workflow: 'Study Source ↓ Take Notes in Typora ↓ Structure with Headings ↓ Add Tables & Diagrams ↓ Export to PDF/HTML ↓ Share',
+                features: [
+                    'Markdown: Full Markdown syntax support',
+                    'Preview: Live preview without switching modes',
+                    'Export: Export to PDF, HTML, Word, ePub',
+                    'Table: Visual table creation and editing',
+                    'Diagram: Mermaid support for UML, Flowchart, Sequence diagrams',
+                    'Math: LaTeX mathematical formulas',
+                    'Code Fence: Code blocks with syntax highlighting',
+                    'Outline: Document structure sidebar',
+                    'Focus Mode: Distraction-free writing mode',
+                    'Custom CSS: Personalize appearance and enable RTL for Persian text',
+                    'Default App: Can be set as the default .md file handler in Windows'
+                ],
+                fallback: [
+                    { name: 'MarkText', desc: 'Open-source and free with similar features to Typora.' },
+                    { name: 'Obsidian', desc: 'Open-source knowledge management system with graph, custom plugins, and internal linking. Stronger for interconnected notes and building a knowledge base. Great for large, long-term projects.' },
+                    { name: 'Joplin', desc: 'Open-source with sync and encryption capabilities.' },
+                    { name: 'Manual', desc: 'Simple Notepad + manual tree structure. Organize files with consistent naming in folders.' },
+                ],
+                searchTerms: 'best markdown editor, WYSIWYG markdown editor, typora alternative, Markdown editor, live markdown editor, markdown note taking'
+            }, {
+                id: 'taskcoach',
+                name: 'Task Coach',
+                icon: '✅',
+                intro: 'Open-source task management software with tree structure, allowing Task and Subtask definition, progress tracking, and time management.',
+                usage: 'Break large projects into small tasks, set priorities, attach files, and track the progress percentage of each task. Manage multiple projects simultaneously.',
+                why: 'For complex projects like learning hacking or networking, Task Coach provides structure and order. Without it, I get lost in the volume of work.',
+                when: 'At the start of each new project, define all steps as tasks and subtasks. Check daily tasks every day.',
+                workflow: 'Define Project ↓ Break into Tasks ↓ Set Priority ↓ Daily Execution ↓ Update Progress ↓ Complete Project',
+                features: [
+                    'Task: Define tasks with descriptions',
+                    'Subtask: Unlimited tree structure',
+                    'Priority: Prioritization (High, Medium, Low)',
+                    'Category: Categorize tasks',
+                    'Attachment: Attach files and links',
+                    'Progress: Progress percentage per task',
+                    'Reminder: Alerts and reminders',
+                    'Budget: Time budget',
+                    'Export: Export to CSV and HTML',
+                    'Multi-Project: Manage multiple projects simultaneously'
+                ],
+                fallback: [
+                    { name: 'ToDoList', desc: 'Similar open-source software with more features.' },
+                    { name: 'Taskwarrior', desc: 'Command-line version for terminal. Very fast and scriptable.' },
+                    { name: 'Manual', desc: 'Bullet Journal notebook. Method: each task is a line with • and subtasks with →. Mark completed tasks with ✕.' },
+                ],
+                searchTerms: 'offline task management open source, todo list with subtasks, task coach alternative, desktop task manager, project management desktop, open source task manager, todo application'
+            }, {
+                id: 'xmind',
+                name: 'XMind',
+                icon: '🗺️',
+                intro: 'Professional mind mapping software supporting various diagram types: Mind Map, Fishbone, Tree, Timeline, and Logic Chart.',
+                usage: 'Draw mind maps to organize ideas, plan projects, brainstorm, and document relationships between concepts. Design roadmaps and break large goals into smaller steps.',
+                why: 'My mind works better with visuals. XMind helps me see connections between complex concepts and understand the structure of knowledge.',
+                when: 'Before starting to learn a new topic, draw its mind map. When solving a problem, see all aspects in a Mind Map. Use for visual planning of learning paths and goals.',
+                workflow: 'Core Idea ↓ Sub-Branches ↓ Add Details ↓ Connect Branches ↓ Markdown Export ↓ Share with AI for Improvement ↓ Re-Import',
+                features: [
+                    'Mind Map: Classic mind map',
+                    'Fishbone: Cause-and-effect diagram',
+                    'Logic Chart: Logical diagram',
+                    'Tree: Tree structure',
+                    'Timeline: Timeline view',
+                    'Relationship: Connections between nodes',
+                    'Markdown Import: Import from Markdown files',
+                    'Markdown Export: Export to Markdown',
+                    'Themes: Beautiful, diverse themes',
+                    'Roadmap: Design learning roadmaps and project plans'
+                ],
+                fallback: [
+                    { name: 'FreeMind', desc: 'Open-source and free with basic features.' },
+                    { name: 'Mermaid (in Typora)', desc: 'Write mind maps with code in Markdown.' },
+                    { name: 'Manual', desc: 'A3 paper and colored pens. Main idea in the center, branches with different colors going outward.' },
+                ],
+                searchTerms: 'best mind mapping software, xmind alternative, mind map tool offline, mind mapping software, mind map tool, concept mapping software, brainstorm software'
+            }];
+
+const LANGUAGE_WORKFLOW_DATA = {
+    id: 'language-workflow',
+    title: '🌐 Language Learning Workflow (Universal)',
+    content: `
+    <h3>📌 Overview</h3>
+    <p>This workflow is built for <strong>any language</strong>. It separates <em>what you do</em> from <em>which app you use</em>. When a tool is specific to one writing system (e.g., Japanese), it is clearly labelled as an example; for other languages, replace it with an equivalent that provides the same <strong>capability</strong>.</p>
+    <div class="highlight"><strong>Core principle:</strong> The workflow stays the same. Only the tools change. If a tool disappears, you search for its <strong>feature</strong>, not its name.</div>
+
+    <h3>1. 📇 Spaced Repetition (Flashcard System)</h3>
+    <p>Store every new word, expression, grammar pattern, and sentence in a <strong>spaced repetition system</strong>. The system schedules reviews exactly when you are about to forget, moving knowledge into long-term memory with the least effort.</p>
+    <p><strong>Example tool: Anki</strong> (open source, all platforms). Yomiwa also has a built‑in SRS that can export directly to Anki.</p>
+    <p><strong>Card types that work for any language:</strong></p>
+    <ul>
+        <li><strong>Recognition (passive):</strong> Target language → meaning, pronunciation, image</li>
+        <li><strong>Production (active):</strong> Meaning/image → target language (spelling & pronunciation)</li>
+        <li><strong>Sentence cards:</strong> Full sentence with target word highlighted → meaning and reading</li>
+        <li><strong>Audio cards:</strong> Audio clip → text and meaning</li>
+        <li><strong>Cloze deletion:</strong> Sentence with missing word → complete sentence</li>
+        <li><strong>Image occlusion:</strong> Hide parts of a character or diagram (great for logographic scripts)</li>
+    </ul>
+    <div class="highlight">Review every day. Aim for 80–90% retention. If retention drops, reduce new cards; if it stays above 95%, you can increase. The flashcard system does the scheduling — you just show up.</div>
+
+    <h3>2. 📖 Reading & Vocabulary Extraction (Reading Assistant)</h3>
+    <p>Read level‑appropriate texts inside a <strong>reading assistant</strong> — an app that lets you tap a word and instantly see its meaning, pronunciation, and dictionary form. This eliminates the friction of looking up words and keeps you immersed.</p>
+    <p><strong>Example for Japanese: Yomiwa</strong> — includes OCR, furigana, text analyzer, built‑in SRS, and direct export to Anki. For other languages, use any app that offers popup dictionary, text segmentation, and flashcard export.</p>
+    <p><strong>Sources of reading material:</strong></p>
+    <ul>
+        <li>AI‑generated texts tailored to your level and interests</li>
+        <li>Graded readers and simplified news</li>
+        <li>Authentic content (social media, song lyrics, forums, manga)</li>
+        <li>Parallel texts (native language + target language side by side)</li>
+    </ul>
+    <p><strong>Must‑have features in your reading assistant:</strong></p>
+    <ul>
+        <li><strong>Touch‑to‑define:</strong> Tap any word for meaning, pronunciation, and examples</li>
+        <li><strong>Lemma recovery:</strong> Returns conjugated/declined words to their dictionary form</li>
+        <li><strong>Text segmentation:</strong> Parses languages without spaces (Japanese, Chinese, Thai)</li>
+        <li><strong>Direct export:</strong> Send words or sentences to your flashcard system (or use a built‑in SRS like Yomiwa's)</li>
+        <li><strong>Popup mode:</strong> Display definitions as a floating window over any app</li>
+        <li><strong>Cross‑app sharing:</strong> Receive text from other apps and send words to your flashcard system</li>
+    </ul>
+    <div class="highlight">Reading volume is the single biggest predictor of proficiency. The less friction between seeing an unknown word and understanding it, the more you will read.</div>
+
+    <h3>3. 👂 Listening Practice (Audio Input)</h3>
+    <p>Listening trains your ear for natural speed, intonation, and connected speech. Combine <strong>active</strong> (focused) and <strong>passive</strong> (background) listening.</p>
+    <ul>
+        <li><strong>Structured audio courses:</strong> Pimsleur, Language Transfer, or similar — designed for graduated recall and speaking</li>
+        <li><strong>Active listening:</strong> Listen to a short clip (30–60s) multiple times — first for gist, then for details, then with transcript, then without</li>
+        <li><strong>Shadowing:</strong> Repeat aloud simultaneously with the audio, matching speed and intonation</li>
+        <li><strong>Dictation:</strong> Write down exactly what you hear; reveals which sounds you miss</li>
+        <li><strong>Video with target‑language subtitles:</strong> Dual input strengthens both reading and listening</li>
+    </ul>
+    <p><em>Tools: podcast apps with speed control, VLC with bookmarks for replay, YouTube with target‑language captions.</em></p>
+
+    <h3>4. ✍️ Writing System & Handwriting Practice</h3>
+    <p>For languages with a non‑Latin script, use a dedicated <strong>writing practice app</strong> that teaches correct stroke order, character recognition, and spelling.</p>
+    <p><strong>Example for Japanese: Kanji Dojo</strong> — covers JLPT N5–N1 with stroke animations and handwriting recognition. For other scripts, look for apps like Skritter, Write It! or Anki decks with stroke order diagrams.</p>
+    <ul>
+        <li><strong>Logographic (Japanese kanji, Chinese hanzi):</strong> Stroke order, handwriting recognition, SRS review</li>
+        <li><strong>Alphabetic / abjad (Russian, Arabic, Hebrew):</strong> Spelling practice and handwriting worksheets</li>
+        <li><strong>Syllabic (Korean hangul, Japanese kana):</strong> Interactive syllable combiners and writing quizzes</li>
+        <li><strong>Abugida (Devanagari, Thai):</strong> Consonant‑vowel combination drills</li>
+    </ul>
+    <div class="highlight">Even if your main goal is speaking, learning the writing system unlocks authentic materials and accelerates vocabulary retention through visual memory.</div>
+
+    <h3>5. 📐 Grammar Study (Pattern Recognition & Production)</h3>
+    <p>Grammar is the scaffolding for vocabulary. Study it as a <strong>tool for communication</strong>, not as an end in itself.</p>
+    <ul>
+        <li><strong>Spiral learning:</strong> Learn the basic pattern, practice, move on, revisit deeper nuances later</li>
+        <li><strong>Pattern recognition first:</strong> Expose yourself to many examples before memorising rules</li>
+        <li><strong>Sentence mining:</strong> Save whole sentences that demonstrate a grammar point as flashcards (Anki)</li>
+        <li><strong>Contrast with your native language:</strong> Understand structural differences to avoid direct translation errors</li>
+        <li><strong>Production practice:</strong> Write 3–5 original sentences using a new pattern and have them checked</li>
+    </ul>
+    <p><em>Resources: a structured grammar guide for your target language, YouTube grammar channels, AI‑generated example sentences. Document grammar notes in Typora or Obsidian.</em></p>
+
+    <h3>6. 🗣️ Speaking & Pronunciation (Output Practice)</h3>
+    <p>Speaking is a separate motor skill. It requires active practice to build automaticity.</p>
+    <ul>
+        <li><strong>Self‑talk:</strong> Narrate your day or describe a topic aloud in the target language</li>
+        <li><strong>AI conversation:</strong> Use AI voice mode for low‑pressure conversation with corrections</li>
+        <li><strong>Recording & review:</strong> Record yourself for 1–2 minutes; listen back a day later to catch errors</li>
+        <li><strong>Pronunciation drills:</strong> Focus on sounds that don't exist in your native language; use minimal pairs</li>
+        <li><strong>Reading aloud:</strong> Read texts while focusing on rhythm and intonation; compare with native audio</li>
+        <li><strong>Language exchange / tutoring:</strong> Platforms like iTalki or HelloTalk for real conversation</li>
+    </ul>
+    <div class="highlight">Fluency = automaticity. Your flashcards build word‑level automaticity; speaking practice builds sentence‑level automaticity. Both are necessary.</div>
+
+    <h3>7. 🔄 Quick Text Analysis (Popup Dictionary)</h3>
+    <p>When reading outside your main reading assistant (browser, PDF, social media), use a <strong>popup dictionary</strong> that displays definitions in a floating window without switching apps.</p>
+    <p><strong>Example for Japanese: Akebi</strong> — supports handwriting input and radical search. For other languages, search for "popup dictionary [language]" or "floating dictionary app".</p>
+    <p><strong>Essential features:</strong> tap‑to‑define, lemma recovery, offline capability, direct export to your flashcard system.</p>
+
+    <h3>8. 🌐 Quick Translation (Fallback Only)</h3>
+    <p>A <strong>translation tool</strong> is a comprehension aid, not a learning tool. Use it as a last resort when a dictionary isn't enough.</p>
+    <p><strong>Example: Google Translate Offline</strong> — works for many languages with downloadable packs, popup mode, and camera translation. Microsoft Translator is a solid alternative.</p>
+
+    <h3>9. 📚 Ebook Reader with Share Integration</h3>
+    <p>For EPUB, PDF, or TXT books, use an <strong>ebook reader that supports text sharing</strong>. The critical feature is the ability to long‑press text and send it directly to your dictionary (Yomiwa, Akebi), flashcard system (Anki), or translation tool — no copy‑paste needed.</p>
+    <p><strong>Example: Moon+ Reader</strong> (Android) — when you hold on text, the share menu instantly offers Anki, Yomiwa, Akebi, and Google Translate. Alternatives: ReadEra, KOReader.</p>
+
+    <h3>10. 📝 Note‑Taking (Markdown Editor / Knowledge Base)</h3>
+    <p>Write summaries, grammar notes, and learning logs in a <strong>Markdown editor</strong>. Markdown is plain text, future‑proof, and exportable to any format.</p>
+    <p><strong>Example tools:</strong></p>
+    <ul>
+        <li><strong>Typora</strong> — simple, live preview, custom CSS (RTL support for Persian), can be set as default .md handler</li>
+        <li><strong>Obsidian</strong> — more powerful: internal links, graph view, community plugins, ideal for building a long‑term knowledge base</li>
+    </ul>
+    <p><em>Alternatives: MarkText, Joplin, Logseq.</em></p>
+
+    <h3>11. 📋 Project Management (Task Manager)</h3>
+    <p>Break "learn a language" into concrete, trackable tasks using a <strong>desktop task manager</strong>.</p>
+    <p><strong>Example: Task Coach</strong> — open source, supports subtasks, priorities, progress tracking, and reminders.</p>
+    <ul>
+        <li><strong>Daily:</strong> complete flashcard reviews, read 10 minutes, add 5 new words</li>
+        <li><strong>Weekly:</strong> finish one audio lesson, write 10 original sentences, export highlights from Moon+ Reader</li>
+        <li><strong>Monthly:</strong> practice test, consolidate grammar notes in Typora/Obsidian, update XMind roadmap, full backup</li>
+    </ul>
+
+    <h3>12. 🗺️ Visual Planning (Mind Mapping)</h3>
+    <p>Use a <strong>mind mapping tool</strong> to design your learning roadmap, connect grammar topics, and visualise progress.</p>
+    <p><strong>Example: XMind</strong> — supports mind maps, fishbone diagrams, timelines, and Markdown import/export. Alternatives: FreeMind, Mermaid (in Typora/Obsidian), or pen and paper.</p>
+
+    <h3>🔄 Daily Workflow (Step by Step)</h3>
+    <div class="highlight">
+        <ol style="margin:0;padding-left:20px;">
+            <li><strong>Morning review (15–30 min):</strong> Complete all due Anki flashcards. This clears your queue and activates the language in your brain.</li>
+            <li><strong>Active listening (10–15 min):</strong> One Pimsleur lesson or podcast episode with full attention. Shadow if possible.</li>
+            <li><strong>Reading session (15–30 min):</strong> Read an AI‑generated or graded text inside your reading assistant (Yomiwa for Japanese).</li>
+            <li><strong>Vocabulary extraction (during reading):</strong> Tap unknown words, check meaning and dictionary form, send important ones to Anki (or use Yomiwa's built‑in SRS).</li>
+            <li><strong>Writing practice (10–15 min):</strong> Practise new characters, spelling, or handwriting with Kanji Dojo (for Japanese) or equivalent.</li>
+            <li><strong>Grammar & notes (10 min):</strong> Write 3–5 original sentences using a new grammar point. Document insights in Typora or Obsidian.</li>
+            <li><strong>Speaking practice (5–10 min):</strong> Self‑talk or AI conversation. Record occasionally for self‑review.</li>
+            <li><strong>Passive listening (background):</strong> Target language audio during commutes or chores — not primary study, but environmental exposure.</li>
+            <li><strong>Quick lookup (anytime):</strong> When reading in a browser or PDF, use Akebi or Google Translate Offline for instant popup translation.</li>
+            <li><strong>Weekly review:</strong> Process highlights from Moon+ Reader, update XMind roadmap, check Task Coach progress, back up all data.</li>
+        </ol>
+    </div>
+
+    <h3>📊 Progress Tracking & Metrics</h3>
+    <p>Track these to stay motivated and identify weak areas:</p>
+    <ul>
+        <li><strong>Flashcard stats:</strong> daily reviews, retention rate, total mature cards (Anki statistics)</li>
+        <li><strong>Reading volume:</strong> pages or articles per week</li>
+        <li><strong>Listening hours:</strong> active listening hours per week (target 3–5)</li>
+        <li><strong>Writing output:</strong> original sentences per week</li>
+        <li><strong>Speaking minutes:</strong> minutes of active speaking practice per day</li>
+        <li><strong>Periodic self‑assessment:</strong> every 1–3 months, take a practice test or record a speaking sample and compare with your baseline</li>
+    </ul>
+
+    <h3>🆘 When a Tool Disappears</h3>
+    <p>Software gets abandoned, removed from stores, or breaks on new operating systems. <strong>Never tie your workflow to a specific app.</strong></p>
+    <div class="rule-box">
+        <strong>🔑 The Golden Rule:</strong> Search for the <strong>capability</strong>, not the app name. If Yomiwa disappears, search for <em>"popup dictionary Japanese"</em>, <em>"Japanese text analyzer"</em>, or <em>"Japanese OCR dictionary"</em>. If Anki is gone, search for <em>"spaced repetition software"</em> or <em>"open source flashcard app"</em>. New tools with the same features appear all the time.
+    </div>
+
+    <h4>🔍 Replacement Search Keywords (by Tool & Capability)</h4>
+    <p>For each tool in the workflow, here are the exact capabilities to search for:</p>
+    <ul>
+        <li><strong>Anki →</strong> <mark>spaced repetition software</mark> · <mark>SRS flashcard app</mark> · <mark>open source flashcard app</mark> · <mark>Anki alternative</mark></li>
+        <li><strong>Yomiwa →</strong> <mark>popup dictionary Japanese</mark> · <mark>Japanese text analyzer</mark> · <mark>Japanese OCR dictionary</mark> · <mark>Japanese reading assistant</mark> · <mark>Yomiwa alternative</mark></li>
+        <li><strong>Akebi →</strong> <mark>Japanese popup dictionary</mark> · <mark>offline Japanese dictionary handwriting</mark> · <mark>Akebi alternative</mark></li>
+        <li><strong>Kanji Dojo →</strong> <mark>kanji handwriting app</mark> · <mark>JLPT study app</mark> · <mark>stroke order app</mark> · <mark>Kanji Dojo alternative</mark></li>
+        <li><strong>Google Translate Offline →</strong> <mark>offline translator</mark> · <mark>popup translator</mark> · <mark>OCR translator</mark> · <mark>Google Translate alternative</mark></li>
+        <li><strong>Moon+ Reader →</strong> <mark>ebook reader with dictionary</mark> · <mark>reader share selected text</mark> · <mark>EPUB reader highlight export</mark> · <mark>Moon Reader alternative</mark></li>
+        <li><strong>Typora →</strong> <mark>Markdown editor</mark> · <mark>live preview Markdown editor</mark> · <mark>Typora alternative</mark></li>
+        <li><strong>Obsidian →</strong> <mark>knowledge base software</mark> · <mark>PKM tool</mark> · <mark>note‑taking with graph</mark> · <mark>Obsidian alternative</mark></li>
+        <li><strong>Task Coach →</strong> <mark>desktop task manager</mark> · <mark>todo app with subtasks</mark> · <mark>open source task manager</mark> · <mark>Task Coach alternative</mark></li>
+        <li><strong>XMind →</strong> <mark>mind mapping software</mark> · <mark>concept mapping tool</mark> · <mark>XMind alternative</mark></li>
+    </ul>
+    <p>Always add <mark>best [feature]</mark> and <mark>open source [feature]</mark> to find the highest‑quality replacements.</p>
+
+    <h3>♾️ Future‑Proofing Your Learning System</h3>
+    <p>Software changes. Companies shut down. Operating systems evolve. <strong>A workflow based on capabilities survives any tool.</strong></p>
+    <p>This document names real tools (Anki, Yomiwa, Moon+ Reader, etc.) because they work today. But the <em>reason</em> each tool is here is its capability — not its brand. If you need to replace a tool:</p>
+    <ol>
+        <li>Identify the <strong>core capability</strong> you need (e.g., "touch‑to‑define with lemma recovery and Anki export").</li>
+        <li>Search for that capability using the keywords above.</li>
+        <li>Test the new tool to see if it integrates with the rest of your workflow (share, popup, export).</li>
+        <li>Swap it in. <strong>Do not change the workflow itself.</strong></li>
+    </ol>
+    <div class="highlight">The tools will change over the years. Spaced repetition, comprehensible input, active recall, and consistent daily practice — these principles are timeless. Build your system around them, not around any single application.</div>
+    `
+};
+
+            const TECHNIQUES_DATA = [
+                { id: 'selfhypnosis', name: 'Self Hypnosis',
+                    desc: 'A technique for penetrating the subconscious mind through suggestion in a trance state. By lowering brain waves to the alpha/theta state, the resistance of the conscious mind is bypassed and new beliefs are planted directly in the subconscious. Problem solved: Limiting beliefs and negative habits that cannot be changed with logic alone. How to use: In a quiet environment, breathe deeply until reaching a trance state, then repeat positive suggestions. Advantages: Deep belief change, reduced stress, increased confidence. Disadvantages: Requires consistent practice, gradual results. Example: The suggestion "I am improving every day" repeated every night before sleep. Resources: Book "Self-Hypnosis" by Maxwell Maltz.' },
+                { id: 'meditation', name: 'Meditation',
+                    desc: 'The practice of focusing awareness on a single point (breath, mantra, or body sensation) to calm the mind. Problem solved: Busy mind, chronic stress, lack of focus. Method: Sit in silence for 10–20 minutes daily, focusing on the breath. Advantages: Reduced cortisol, increased brain gray matter, improved focus. Disadvantages: Requires consistency; may feel boring initially. Example: 15-minute morning meditation before starting learning. Resources: Headspace app, book "The Mind Illuminated".' },
+                { id: 'mindfulness', name: 'Mindfulness',
+                    desc: 'Complete presence in the current moment without judgment. Awareness of thoughts, feelings, and body sensations in real time. Problem solved: Living in the past/future, anxiety, automatic reactions. Method: In every daily activity (eating, walking), bring full attention to that moment. Advantages: Reduced stress, improved relationships, greater enjoyment of life. Disadvantages: Difficult in a busy culture. Example: When studying, only study — no checking your phone. Resources: Book "Wherever You Go, There You Are" by Jon Kabat-Zinn.' },
+                { id: 'mushin', name: 'Mushin (Mind of No-Mind)',
+                    desc: 'A Zen Buddhist concept: a state where the mind is empty of distracting thoughts and action is performed without conscious thought, with maximum speed and precision. Problem solved: Analysis paralysis, hesitation in the moment of action. Method: Practice a skill so much that it becomes a reflex. Advantages: Incredible reaction speed, spontaneous creativity. Disadvantages: Requires thousands of hours of practice. Example: The samurai who swings the sword without thinking. Resources: Book "Zen in the Art of Archery".' },
+                { id: 'ikigai', name: 'Ikigai (Reason for Being)',
+                    desc: 'Japanese philosophy: the intersection of four circles — what you love, what the world needs, what you can be paid for, what you are good at. Problem solved: Aimlessness, burnout, lack of motivation. Method: Draw the four circles and find the intersection point. Advantages: Meaningful life, sustainable motivation. Disadvantages: Finding Ikigai takes time. Example: I love learning and problem-solving (love), the world needs cybersecurity (need), I can earn from bug bounties (paid), I am continuously learning (skill) → My Ikigai is cybersecurity. Resources: Book "Ikigai: The Japanese Secret to a Long and Happy Life".' },
+                { id: 'willoffire', name: 'Will of Fire',
+                    desc: 'Inspired by the anime Naruto: the power to keep going even when everything is against you. The fuel for this will is protecting something or someone valuable to you. Problem solved: Giving up in the face of difficulties, lack of mental endurance. Method: Define a strong "why" for yourself. Advantages: Infinite endurance, overcoming obstacles. Disadvantages: May become obsessive. Example: "I keep going because I want to protect my family and go to Japan." Resources: Inner concept — build it in personal meditation.' },
+                { id: 'emptiness', name: 'Emptiness Technique',
+                    desc: 'Accepting that nothing goes according to plan — and that\'s okay. Releasing attachment to outcomes and falling in love with the path itself. Problem solved: Disappointment from failure, attachment to results. Method: Remind yourself daily: "I am here for the path itself, not just the destination." Advantages: Psychological freedom, flexibility. Disadvantages: May appear as indifference. Example: When a project fails, instead of being upset, say: "Well, what did I learn from this? The path continues." Resources: Personal concept — inspired by Zen philosophy and Stoicism.' },
+                { id: 'hooklearning', name: 'Hook Learning',
+                    desc: 'Create a small "mental hook" for each concept. Instead of memorizing all details, remember just one clue that later connects you to the entire knowledge. Problem solved: Complete forgetting of material, information overload. Method: For each protocol or concept, memorize only 2–3 keywords (e.g., DHCP = DORA). Advantages: Reduced mental load, rapid retrieval. Disadvantages: Requires a reference source for details. Example: DNS = Phonebook of the Internet. If you later have a DNS problem, the "phonebook" clue leads you to all DNS knowledge. Resources: Elaborative Encoding concept in cognitive psychology.' },
+                { id: 'elaborative', name: 'Elaborative Encoding',
+                    desc: 'Instead of rote memorization, connect new information to prior knowledge and create a story around it. Problem solved: Rapid forgetting, superficial learning. Method: Combine every new concept with a personal example or story. Advantages: High memory retention, deep understanding. Disadvantages: More time-consuming than simple memorization. Example: To learn HTTP, the story: "A courier who takes a package (Request) from home (Client) to the store (Server) and brings back the answer (Response)." Resources: Craik & Tulving research on Levels of Processing.' },
+                { id: 'spacedrep', name: 'Spaced Repetition',
+                    desc: 'Reviewing information at increasing time intervals, exactly before forgetting. Based on the Ebbinghaus forgetting curve. Problem solved: Forgetting after initial learning. Method: Use Anki with the FSRS algorithm. Advantages: The most optimal method for memory consolidation. Disadvantages: Requires daily consistency. Example: Review network flashcards according to the Anki schedule. Resources: Hermann Ebbinghaus research, Anki software.' },
+                { id: 'fsrs', name: 'FSRS (Free Spaced Repetition Scheduler)',
+                    desc: 'Next-generation SRS algorithm that uses machine learning to model your personal forgetting pattern. More accurate than the old SM-2. Problem solved: Inappropriate review scheduling (too soon or too late). Method: Enable FSRS in Anki settings. Advantages: ~30% reduction in review load, increased retention. Disadvantages: Algorithm complexity. Example: Anki with FSRS learns that you forget networking cards faster than language cards and adjusts the schedule. Resources: FSRS documentation on GitHub.' },
+                { id: 'activerecall', name: 'Active Recall',
+                    desc: 'Instead of passive review, actively try to pull information out of memory. The most powerful evidence-based learning technique. Problem solved: Illusion of knowing (when you think you know but you don\'t). Method: Close the book and write/say everything you remember. Advantages: 2–3x more effective than simple review. Disadvantages: Harder and more tiring. Example: After reading a networking chapter, close the book and list all protocols from memory. Resources: Karpicke & Roediger research.' },
+                { id: 'adaptivereview', name: 'Adaptive Review',
+                    desc: 'Adjusting the review schedule based on actual performance. Review harder cards more and easier cards less. Problem solved: Wasting time on easy material. Method: Use the Again/Hard/Good/Easy buttons honestly in Anki. Advantages: Optimized review time. Disadvantages: Requires honest self-assessment. Example: If you answer a card in 2 seconds → Easy. If you thought for 10 seconds → Good.' },
+                { id: 'feynman', name: 'Feynman Technique',
+                    desc: 'Explain a concept so simply that a 5-year-old could understand it. If you can\'t, you haven\'t fully learned it yet. Problem solved: Superficial knowledge and illusion of knowing. Method: Choose a topic, explain it to an imaginary child, identify gaps, study again. Advantages: Deep understanding, precise identification of weak points. Disadvantages: Time-consuming. Example: "The OSI Model is like a factory: Layer 1 is the wires, Layer 7 is the application you see..." Resources: Biography of Richard Feynman.' },
+                { id: 'memorypalace', name: 'Memory Palace',
+                    desc: 'Ancient technique: convert information into strange images and place them in familiar locations (like your home). Problem solved: Memorizing unrelated information and long lists. Method: Choose a familiar path (e.g., rooms of your house), convert each item into an absurd image at a station. Advantages: Unlimited capacity, high retention. Disadvantages: Requires practice and creativity. Example: To memorize OSI layers: Physical = power cord at the house entrance, Data Link = switch in the hallway... Resources: Book "Moonwalking with Einstein".' },
+                { id: 'chunking', name: 'Chunking',
+                    desc: 'Breaking large information into smaller meaningful chunks. The human brain holds 7±2 chunks simultaneously, but each chunk can be large. Problem solved: Working memory limitations. Method: Group numbers and information. Example: 192.168.1.1 instead of 19216811. Resources: George Miller research.' },
+                { id: 'visualization', name: 'Visualization',
+                    desc: 'Converting abstract information into clear, preferably exaggerated mental images. The brain retains images far better than words. Problem solved: Forgetting abstract concepts. Method: Create an absurd image for each concept. Example: DNS = a giant phonebook with cartoon characters jumping out of it.' },
+                { id: 'imageocclusion', name: 'Image Occlusion',
+                    desc: 'Hiding part of an image (e.g., a network diagram) and trying to recall that part. Problem solved: Memorizing diagrams and maps. Method: Using the Image Occlusion add-on in Anki, draw boxes on images. Example: Upload a network topology diagram, cover device names.' },
+                { id: 'dualnback', name: 'Dual N-Back',
+                    desc: 'The only cognitive exercise scientifically proven to increase Working Memory capacity. Problem solved: Weak working memory, distractibility. Method: 20 minutes daily with Brain Workshop software. Advantages: Increased fluid IQ, improved focus. Disadvantages: Tedious and difficult. Example: When the square is in the same position as N steps ago AND the letter repeats, press the button.' },
+                { id: 'workingmemory', name: 'Working Memory',
+                    desc: 'The brain\'s temporary workbench. Holds information for 15–30 seconds for processing. Limited capacity (4–7 items). Problem solved: Forgetting mid-task (e.g., forgetting why you entered a room). Strengthening methods: Dual N-Back, meditation, adequate sleep. Example: When you hear a phone number and hold it in mind until dialing.' },
+                { id: 'longtermmemory', name: 'Long-term Memory',
+                    desc: 'The brain\'s permanent warehouse with near-unlimited capacity. Information is transferred here after processing by the hippocampus. Problem solved: Complete forgetting of material after a period. Transfer methods: Spaced Repetition, adequate sleep (consolidation happens during sleep), Emotional Tagging.' },
+                { id: 'memoryhooks', name: 'Memory Hooks',
+                    desc: 'Create a clue or "hook" to hang new information on. Similar to Hook Learning but focused on absurd mental images. Problem solved: Isolated information not connected to anything. Method: For each new word, create an absurd image with a word you already know. Example: Japanese word "taberu" (to eat) → imagine eating at a Table.' },
+                { id: 'compound', name: 'Compound Effect',
+                    desc: 'Small daily improvements that compound into massive results over time. 1% better each day = 37x better in a year. Problem solved: Discouragement from lack of rapid progress. Method: Take just one small step every day. Example: 5 minutes of Kanji Dojo daily → 30 hours of practice in a year.' },
+                { id: 'pareto', name: 'Pareto 80/20',
+                    desc: '80% of results come from 20% of efforts. Focus on the vital 20%. Problem solved: Wasting time on low-importance details. Method: Identify the 20% of activities that yield the highest return. Example: 20% of network protocols (DNS, HTTP, TCP/IP) are used in 80% of real-world scenarios.' },
+                { id: 'toolsfirst', name: 'Tools First',
+                    desc: 'Before starting any project, first find the best available tool for the job. If it doesn\'t exist, build it yourself. Problem solved: Wasting time with inappropriate tools. Method: Systematic search for the right tool before starting work. Example: Before note-taking, I found and set up Typora.' },
+                { id: 'prioritization', name: 'Prioritization',
+                    desc: 'Recognizing which tasks are truly important and which only appear urgent. The Eisenhower Matrix. Problem solved: Being busy without real progress. Method: Divide tasks into four categories: Important-Urgent, Important-Not Urgent, Not Important-Urgent, Not Important-Not Urgent. Example: Anki review = Important-Not Urgent (schedule it). Phone notifications = Not Important-Urgent (eliminate them).' },
+                { id: 'continuous', name: 'Continuous Learning',
+                    desc: 'Commitment to lifelong learning as a lifestyle, not a temporary project. The world changes rapidly. Problem solved: Skills becoming obsolete. Method: At least 30 minutes of active learning every day. Example: Even on busy days, review 10 Anki cards.' },
+                { id: 'adaptability', name: 'Adaptability',
+                    desc: 'The ability to change methods and strategies when conditions change. Mental flexibility. Problem solved: Failure when plans don\'t go as expected. Method: Always have a Plan B and Plan C. Example: If Anki doesn\'t work → SuperMemo. If that doesn\'t work → paper flashcards.' },
+                { id: 'riskmanagement', name: 'Risk Management',
+                    desc: 'Identifying, analyzing, and preparing for potential risks before they occur. Problem solved: Surprise and crisis. Method: For each project, write a list of "What could go wrong?" and have a solution for each. Example: Regular backup of Anki decks.' },
+                { id: 'problemsolving', name: 'Problem Solving',
+                    desc: 'A systematic approach to challenges: precisely define the problem, analyze the root cause, generate multiple solutions, select the best, implement, and evaluate. Problem solved: Confusion in the face of complex problems. Method: The 5 Whys framework to find the root cause. Example: Why won\'t Anki sync? → Internet down? → Why? → Modem broken? → Why? ...' },
+                { id: 'goaloriented', name: 'Goal Oriented',
+                    desc: 'Focus on the end result rather than obsessing over the tool or method. The tool is just a means. Problem solved: Getting lost in tools and forgetting the goal. Method: Before any task, ask: "What is my ultimate goal?" Example: Goal = Learn Japanese, not having the best dictionary app.' },
+                { id: 'infoextraction', name: 'Information Extraction',
+                    desc: 'The art of pulling key information from vast sources. Active and purposeful reading. Problem solved: Drowning in information. Method: Before reading, write down your questions and search for answers. Example: When reading a networking book, only look for the answer to "What problem does this protocol solve?"' },
+                { id: 'strategicnetworking', name: 'Strategic Networking',
+                    desc: 'Building purposeful relationships with people who can help on the learning and growth path. Problem solved: Loneliness on the learning path, lack of a mentor. Method: Be active in relevant online communities, ask questions, help others. Example: Join cybersecurity Discords and share findings.' },
+                { id: 'decisionmaking', name: 'Decision Making',
+                    desc: 'The process of selecting the best option from available choices quickly and without bias. Problem solved: Decision paralysis, regret. Method: The 10-10-10 rule (What impact will this decision have in 10 minutes, 10 months, 10 years?). Example: Choosing between two courses → Which will be more useful to me in 10 months?' }
+            ];
+
+            const TOOL_FINDER_DATA = [
+                { name: 'Anki', search: 'best spaced repetition software · SRS flashcard app · open source flashcard app · Anki alternative' },
+                { name: 'Yomiwa', search: 'Japanese text analyzer · Japanese parser · Japanese popup dictionary · Japanese OCR dictionary · Japanese reading assistant · Japanese tokenizer · Japanese morphological analyzer · Yomiwa alternative' },
+                { name: 'Akebi', search: 'Japanese popup dictionary · Japanese dictionary app · Japanese text parser · Japanese analyzer · Akebi alternative' },
+                { name: 'Kanji Dojo', search: 'Kanji handwriting app · Kanji writing practice · JLPT study app · Kanji learning app · Japanese vocabulary trainer · Kanji Dojo alternative' },
+                { name: 'Google Translate Offline', search: 'offline translator · offline OCR translator · popup translator · screen translate app · offline Japanese translator' },
+                { name: 'Moon+ Reader', search: 'ebook reader Android · EPUB reader · PDF reader with dictionary · reader with share selected text · Moon Reader alternative' },
+                { name: 'Typora', search: 'Markdown editor · live markdown editor · markdown note taking · Typora alternative' },
+                { name: 'Obsidian', search: 'knowledge base software · PKM software · personal knowledge management · note taking graph · Obsidian alternative' },
+                { name: 'Task Coach', search: 'desktop task manager · project management desktop · open source task manager · todo application · Task Coach alternative' },
+                { name: 'XMind', search: 'mind mapping software · mind map tool · concept mapping software · brainstorm software · XMind alternative' },
+            ];
+
+            const BACKUP_STRATEGY = [
+                { tool: 'Anki', files: 'Anki folder in Documents or %APPDATA%. .apkg files (exported decks).',
+                    method: 'File → Export → Select deck → apkg format. To Restore: File → Import. Also sync with AnkiWeb as cloud backup.',
+                    important: 'collection.anki2 file (main database), media folder, exported .apkg files.' },
+                { tool: 'Yomiwa', files: 'Internal app database (no root needed).',
+                    method: 'Settings → Backup → Export data. Copy the backup file to a safe folder.',
+                    important: 'App backup file, internal flashcard list.' },
+                { tool: 'Akebi', files: 'Internal app database.',
+                    method: 'Check app settings for backup/export options. Copy backup file.',
+                    important: 'Backup file, favorite words list.' },
+                { tool: 'Kanji Dojo', files: 'Progress database (internal to app).',
+                    method: 'Backup via app settings. Save the file in a safe place.',
+                    important: 'Progress backup file.' },
+                { tool: 'Google Translate Offline', files: 'Downloaded offline packs.',
+                    method: 'Packs managed in Settings → Offline translation. If the app is deleted, re-download.',
+                    important: 'List of downloaded packs (for re-download).' },
+                { tool: 'Moon+ Reader', files: 'Books folder on internal storage or SD Card.',
+                    method: 'Copy the entire Books folder. Highlights can be exported via Settings → Export Highlights.',
+                    important: 'EPUB/PDF files, exported highlights files.' },
+                { tool: 'Typora', files: 'All .md files in project folders.',
+                    method: 'Copy all Desktop folders (hacking, Network, Programming, etc.) to an external hard drive and a USB flash drive. Use 7-Zip for compression.',
+                    important: 'All .md files, books folder, images folder.' },
+                { tool: 'Task Coach', files: '.tsk file (task database).',
+                    method: 'File → Save As → Save in backup folder. Copy the .tsk file.',
+                    important: 'Main .tsk file.' },
+                { tool: 'XMind', files: '.xmind files in project folder.',
+                    method: 'File → Save As → Save in backup folder. Also Export to Markdown for text backup.',
+                    important: '.xmind files, exported .md files.' },
+            ];
+
+            // ==================== STATE MANAGEMENT ====================
+            const STORAGE_KEY = 'plos_state_v7_en';
+
+            function getDefaultState() {
+                const state = {
+                    darkMode: false,
+                    checkedTools: {},
+                    checkedTechniques: {},
+                    openCards: {},
+                    activeSection: 'tools',
+                };
+                TOOLS_DATA.forEach(t => { state.openCards['tool_' + t.id] = false; });
+                TECHNIQUES_DATA.forEach(t => { state.openCards['tech_' + t.id] = false; });
+                state.openCards['language_workflow_card'] = false;
+                state.openCards['backup_section'] = false;
+                state.openCards['finder_section'] = false;
+                return state;
+            }
+
+            function loadState() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (raw) {
+                        const saved = JSON.parse(raw);
+                        const def = getDefaultState();
+                        for (const key of Object.keys(def)) {
+                            if (saved[key] === undefined) saved[key] = def[key];
+                            else if (typeof def[key] === 'object' && def[key] !== null && !Array.isArray(def[key])) {
+                                for (const subkey of Object.keys(def[key])) {
+                                    if (saved[key][subkey] === undefined) saved[key][subkey] = def[key][subkey];
+                                }
+                            }
+                        }
+                        return saved;
+                    }
+                } catch (e) {}
+                return getDefaultState();
+            }
+
+            function saveState(state) {
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+            }
+
+            let appState = loadState();
+
+            // ==================== RENDER ENGINE ====================
+            function renderAll() {
+                const container = document.getElementById('dynamicContent');
+                let html = '';
+
+                // Section: Tools
+                html += '<div class="section" id="sec-tools"><h2>🔧 Tools</h2>';
+                TOOLS_DATA.forEach(tool => {
+                    const cid = 'tool_' + tool.id;
+                    const isOpen = appState.openCards[cid] === true;
+                    const isChecked = appState.checkedTools[tool.id] === true;
+                    html += renderCard(cid, tool.icon + ' ' + tool.name, isOpen, isChecked, renderToolBody(tool), 'tool');
+                });
+                html += '</div>';
+
+                // Section: Language Learning Workflow
+                html += '<div class="section" id="sec-language-workflow"><h2>🌐 Language Learning Workflow</h2>';
+                const lwfCid = 'language_workflow_card';
+                const lwfIsOpen = appState.openCards[lwfCid] === true;
+                html += renderCard(lwfCid, LANGUAGE_WORKFLOW_DATA.title, lwfIsOpen, false, LANGUAGE_WORKFLOW_DATA.content, 'workflow');
+                html += '</div>';
+
+                // Section: Techniques
+                html += '<div class="section" id="sec-techniques"><h2>🧠 Learning Techniques</h2>';
+                TECHNIQUES_DATA.forEach(tech => {
+                    const cid = 'tech_' + tech.id;
+                    const isOpen = appState.openCards[cid] === true;
+                    const isChecked = appState.checkedTechniques[tech.id] === true;
+                    html += renderCard(cid, tech.name, isOpen, isChecked, renderTechniqueBody(tech), 'technique');
+                });
+                html += '</div>';
+
+                // Section: Tool Finder
+                html += '<div class="section" id="sec-finder"><h2>🔍 Tool Finder</h2>';
+                html += renderCard('finder_section', 'If I Forget the Tool Name, What Should I Search For?',
+                    appState.openCards['finder_section'] === true, false, renderFinderBody(), 'finder');
+                html += '</div>';
+
+                // Section: Backup Strategy
+                html += '<div class="section" id="sec-backup"><h2>💾 Backup Strategy</h2>';
+                html += renderCard('backup_section', 'How to Backup & Restore Data for Each Tool',
+                    appState.openCards['backup_section'] === true, false, renderBackupBody(), 'backup');
+                html += '</div>';
+
+                // Section: Personal Philosophy
+                html += '<div class="section" id="sec-philosophy"><h2>💡 Personal Philosophy</h2>';
+                html += '<div class="philosophy-block">';
+                html += 'The tool is only a means.<br>';
+                html += 'Information is more important than the tool.<br>';
+                html += 'Knowledge is more important than information.<br>';
+                html += 'Skill is more important than knowledge.<br>';
+                html += 'Experience is more important than skill.<br><br>';
+                html += 'If the tool is gone, change the method.<br>';
+                html += 'If the information is gone, extract it again.<br>';
+                html += 'If you acquire the skill, no one can take it away from you.<br>';
+                html += '</div></div>';
+
+                container.innerHTML = html;
+                updateProgressBars();
+                updateDarkModeUI();
+                updateSidebarActive();
+            }
+
+            function renderCard(cid, title, isOpen, isChecked, bodyHtml, type) {
+                const openClass = isOpen ? ' open' : '';
+                const checkedAttr = isChecked ? ' checked' : '';
+                const cbHtml = type === 'tool' || type === 'technique' ?
+                    `<span class="cb-wrap"><input type="checkbox" data-cid="${cid}" data-type="${type}" ${checkedAttr}></span>` :
+                    '';
+                return `
+            <div class="card${openClass}" data-cid="${cid}">
+              <div class="card-header" data-toggle="${cid}">
+                <span class="toggle-icon">▶</span>
+                ${cbHtml}
+                <span class="card-title">${title}</span>
+                ${isChecked ? '<span class="badge" style="background:#10b981;color:#fff;">✓</span>' : ''}
+              </div>
+              <div class="card-body">${bodyHtml}</div>
+            </div>`;
+            }
+
+            function renderToolBody(tool) {
+                let h = '';
+                h += `<h3>📋 Introduction</h3><p>${tool.intro}</p>`;
+                h += `<h3>🎯 Usage</h3><p>${tool.usage}</p>`;
+                h += `<h3>❓ Why Is It in My System?</h3><p>${tool.why}</p>`;
+                h += `<h3>⏰ When Should I Use It?</h3><p>${tool.when}</p>`;
+                h += `<h3>🔄 Workflow</h3><div class="highlight">${tool.workflow}</div>`;
+                h += `<h3>⭐ Key Features</h3><ul>`;
+                tool.features.forEach(f => {
+                    const parts = f.split(':');
+                    const title = parts[0];
+                    const desc = parts.slice(1).join(':').trim();
+                    h += `<li><strong>${title}:</strong> ${desc}</li>`;
+                });
+                h += `</ul>`;
+                h += `<h3>🆘 Tool Fallback (If This Software No Longer Exists)</h3>`;
+                h += `<div class="fallback-box"><ol>`;
+                tool.fallback.forEach(fb => {
+                    h += `<li><strong>${fb.name}:</strong> ${fb.desc}</li>`;
+                });
+                h += `</ol></div>`;
+                h += `<p><strong>🔍 If I forget the name, search for:</strong> <em>${tool.searchTerms}</em></p>`;
+                return h;
+            }
+
+            function renderTechniqueBody(tech) {
+                return `<p>${tech.desc}</p>`;
+            }
+
+            function renderFinderBody() {
+                let h = '<p style="margin-bottom:12px;">When searching for a replacement, always search for the <strong>feature</strong>, not just the app name. This ensures you find the newest alternatives even if names change over time.</p>';
+                h += '<ul>';
+                TOOL_FINDER_DATA.forEach(f => {
+                    h += `<li><strong>${f.name}:</strong> <mark>"${f.search}"</mark></li>`;
+                });
+                h += '</ul>';
+                return h;
+            }
+
+            function renderBackupBody() {
+                let h = '';
+                h += `
+                <div class="golden-rule-box">
+                    <h3 style="margin-top:0;color:#10b981;text-align:center;font-size:1.2em;">🏆 THE 3-2-1 BACKUP RULE</h3>
+                    <p style="text-align:center;margin-bottom:10px;">This is the golden rule of data survival. Follow it for everything that matters.</p>
+                    <p><span class="rule-number">3</span> <strong>Keep at least THREE copies of your data</strong> — one primary (working copy) and two backups.</p>
+                    <p><span class="rule-number">2</span> <strong>Store the copies on TWO different types of storage media</strong> — for example: internal SSD + external HDD, or HDD + USB flash drive, or local drive + cloud. Never rely on a single media type.</p>
+                    <p><span class="rule-number">1</span> <strong>Keep ONE copy off-site</strong> — in a different physical location (another building, a friend's house, a safe deposit box, or encrypted cloud storage). This protects against fire, theft, or natural disaster.</p>
+                    <hr style="border-color:#10b981;opacity:0.3;margin:12px 0;">
+                    <p style="text-align:center;font-weight:700;">📌 Remember: If the data doesn't exist in at least 3 places, it doesn't really exist at all.</p>
+                    <p style="text-align:center;font-size:0.85em;">Test your backups regularly. An untested backup is not a backup — it's just a hope.</p>
+                </div>`;
+                h += '<h3 style="margin-top:20px;">📦 Per-Tool Backup Instructions</h3>';
+                BACKUP_STRATEGY.forEach(b => {
+                    h += `<h3 style="color:var(--accent);">📦 ${b.tool}</h3>`;
+                    h += `<p><strong>Important Files:</strong> ${b.files}</p>`;
+                    h += `<p><strong>Backup Method:</strong> ${b.method}</p>`;
+                    h += `<p><strong>Critical Note:</strong> ${b.important}</p>`;
+                });
+                h += `
+                <div class="highlight" style="margin-top:16px;border-left-color:#10b981;">
+                    <strong>🔄 Backup Schedule Recommendation:</strong><br>
+                    • <strong>Daily:</strong> Auto-sync tools (AnkiWeb, cloud sync) do their job automatically.<br>
+                    • <strong>Weekly:</strong> Export decks, highlights, and task files. Copy to external drive.<br>
+                    • <strong>Monthly:</strong> Full system backup — copy all project folders to external HDD + USB flash drive. Update off-site copy.<br>
+                    • <strong>Quarterly:</strong> Test a full restore from your backups to verify everything works.
+                </div>`;
+                return h;
+            }
+
+            // ==================== PROGRESS BARS ====================
+            function updateProgressBars() {
+                const totalTools = TOOLS_DATA.length;
+                const checkedTools = Object.values(appState.checkedTools).filter(v => v === true).length;
+                const totalTechs = TECHNIQUES_DATA.length;
+                const checkedTechs = Object.values(appState.checkedTechniques).filter(v => v === true).length;
+                const totalItems = totalTools + totalTechs;
+                const checkedItems = checkedTools + checkedTechs;
+                const toolsPct = totalTools > 0 ? Math.round((checkedTools / totalTools) * 100) : 0;
+                const techsPct = totalTechs > 0 ? Math.round((checkedTechs / totalTechs) * 100) : 0;
+                const totalPct = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+                document.getElementById('toolsProgressBar').style.width = toolsPct + '%';
+                document.getElementById('toolsProgressPercent').textContent = toolsPct + '%';
+                document.getElementById('techniquesProgressBar').style.width = techsPct + '%';
+                document.getElementById('techniquesProgressPercent').textContent = techsPct + '%';
+                document.getElementById('totalProgressBar').style.width = totalPct + '%';
+                document.getElementById('totalProgressText').textContent = totalPct + '%';
+            }
+
+            // ==================== DARK MODE ====================
+            function updateDarkModeUI() {
+                if (appState.darkMode) {
+                    document.documentElement.classList.add('dark');
+                    document.getElementById('btnDarkMode').textContent = '☀️ Light Mode';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.getElementById('btnDarkMode').textContent = '🌙 Dark Mode';
+                }
+            }
+
+            function toggleDarkMode() {
+                appState.darkMode = !appState.darkMode;
+                updateDarkModeUI();
+                saveState(appState);
+            }
+
+            // ==================== CARD TOGGLE ====================
+            function toggleCard(cid) {
+                appState.openCards[cid] = !appState.openCards[cid];
+                const card = document.querySelector(`.card[data-cid="${cid}"]`);
+                if (card) {
+                    if (appState.openCards[cid]) card.classList.add('open');
+                    else card.classList.remove('open');
+                }
+                saveState(appState);
+            }
+
+            function expandAll() {
+                document.querySelectorAll('.card').forEach(c => {
+                    const cid = c.getAttribute('data-cid');
+                    if (cid) { appState.openCards[cid] = true;
+                        c.classList.add('open'); }
+                });
+                saveState(appState);
+            }
+
+            function collapseAll() {
+                document.querySelectorAll('.card').forEach(c => {
+                    const cid = c.getAttribute('data-cid');
+                    if (cid) { appState.openCards[cid] = false;
+                        c.classList.remove('open'); }
+                });
+                saveState(appState);
+            }
+
+            // ==================== CHECKBOX ====================
+            function handleCheckbox(cid, type, checked) {
+                if (type === 'tool') {
+                    const toolId = cid.replace('tool_', '');
+                    appState.checkedTools[toolId] = checked;
+                } else if (type === 'technique') {
+                    const techId = cid.replace('tech_', '');
+                    appState.checkedTechniques[techId] = checked;
+                }
+                saveState(appState);
+                const card = document.querySelector(`.card[data-cid="${cid}"]`);
+                if (card) {
+                    const badge = card.querySelector('.badge');
+                    const header = card.querySelector('.card-header');
+                    if (checked && !badge) {
+                        const newBadge = document.createElement('span');
+                        newBadge.className = 'badge';
+                        newBadge.style.cssText = 'background:#10b981;color:#fff;';
+                        newBadge.textContent = '✓';
+                        header.appendChild(newBadge);
+                    } else if (!checked && badge) { badge.remove(); }
+                }
+                updateProgressBars();
+            }
+
+            // ==================== SEARCH ====================
+            function searchContent(query) {
+                const q = query.toLowerCase().trim();
+                const sections = document.querySelectorAll('.section');
+                const existingMsg = document.getElementById('noResultsMsg');
+                if (existingMsg) existingMsg.remove();
+                if (!q) {
+                    document.querySelectorAll('.card').forEach(c => {
+                        c.classList.remove('hidden');
+                        const cid = c.getAttribute('data-cid');
+                        if (cid && appState.openCards[cid]) c.classList.add('open');
+                        else if (cid) c.classList.remove('open');
+                    });
+                    sections.forEach(s => s.classList.remove('hidden'));
+                    return;
+                }
+                let anyVisible = false;
+                sections.forEach(section => {
+                    const cards = section.querySelectorAll('.card');
+                    let sectionHasVisible = false;
+                    cards.forEach(card => {
+                        const text = card.textContent.toLowerCase();
+                        if (text.includes(q)) { card.classList.remove('hidden');
+                            card.classList.add('open');
+                            sectionHasVisible = true;
+                            anyVisible = true; } else { card.classList.add('hidden'); }
+                    });
+                    if (sectionHasVisible) section.classList.remove('hidden');
+                    else section.classList.add('hidden');
+                });
+                if (!anyVisible && q) {
+                    const msg = document.createElement('p');
+                    msg.id = 'noResultsMsg';
+                    msg.style.cssText = 'text-align:center;padding:40px;color:var(--text3);';
+                    msg.textContent = '😔 No results found for your search.';
+                    document.getElementById('dynamicContent').appendChild(msg);
+                }
+            }
+
+            // ==================== SIDEBAR ====================
+            function updateSidebarActive() {
+                const links = document.querySelectorAll('#sidebarNav a');
+                links.forEach(l => l.classList.remove('active'));
+                const active = appState.activeSection || 'tools';
+                const activeLink = document.querySelector(`#sidebarNav a[data-section="${active}"]`);
+                if (activeLink) activeLink.classList.add('active');
+            }
+
+            function scrollToSection(sectionId) {
+                const el = document.getElementById(sectionId);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    appState.activeSection = sectionId.replace('sec-', '');
+                    saveState(appState);
+                    updateSidebarActive();
+                }
+                document.getElementById('sidebar').classList.remove('open');
+            }
+
+            // ==================== EVENT HANDLERS ====================
+            function setupEvents() {
+                document.getElementById('dynamicContent').addEventListener('click', function(e) {
+                    const header = e.target.closest('.card-header');
+                    if (!header) return;
+                    const cb = e.target.closest('input[type="checkbox"]');
+                    if (cb) { const cid = cb.getAttribute('data-cid'); const type = cb.getAttribute('data-type');
+                        handleCheckbox(cid, type, cb.checked); return; }
+                    const toggleId = header.getAttribute('data-toggle');
+                    if (toggleId) toggleCard(toggleId);
+                });
+                document.getElementById('dynamicContent').addEventListener('change', function(e) {
+                    if (e.target.type === 'checkbox') { const cid = e.target.getAttribute('data-cid'); const type = e.target
+                            .getAttribute('data-type'); if (cid && type) handleCheckbox(cid, type, e.target.checked); }
+                });
+                document.getElementById('btnDarkMode').addEventListener('click', toggleDarkMode);
+                document.getElementById('btnExpandAll').addEventListener('click', expandAll);
+                document.getElementById('btnCollapseAll').addEventListener('click', collapseAll);
+                document.getElementById('menuToggle').addEventListener('click', function() { document.getElementById(
+                        'sidebar').classList.toggle('open'); });
+                document.getElementById('sidebarNav').addEventListener('click', function(e) { const link = e.target.closest(
+                        'a'); if (!link) return;
+                    e.preventDefault(); const section = link.getAttribute('data-section'); if (section) scrollToSection(
+                        'sec-' + section); });
+                let searchTimeout;
+                document.getElementById('searchInput').addEventListener('input', function() { clearTimeout(searchTimeout);
+                    const query = this.value;
+                    searchTimeout = setTimeout(() => searchContent(query), 250); });
+                document.getElementById('mainContent').addEventListener('click', function(e) { if (window.innerWidth <=
+                        768) document.getElementById('sidebar').classList.remove('open'); });
+                document.addEventListener('keydown', function(e) { if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e
+                        .preventDefault();
+                    document.getElementById('searchInput').focus(); } if (e.key === 'Escape') { document.getElementById(
+                        'searchInput').value = '';
+                    searchContent('');
+                    document.getElementById('searchInput').blur(); } });
+                window.addEventListener('beforeunload', function() { saveState(appState); });
+                let scrollTimeout2;
+                window.addEventListener('scroll', function() { clearTimeout(scrollTimeout2);
+                    scrollTimeout2 = setTimeout(() => { const sections = document.querySelectorAll('.section');
+                        let currentSection = 'tools';
+                        sections.forEach(s => { const rect = s.getBoundingClientRect(); if (rect.top <= 150)
+                                currentSection = s.id.replace('sec-', ''); }); if (appState.activeSection !==
+                            currentSection) { appState.activeSection = currentSection;
+                            updateSidebarActive(); } }, 150); });
+            }
+
+            function init() {
+                renderAll();
+                setupEvents();
+                updateDarkModeUI();
+                updateProgressBars();
+                if (appState.darkMode) document.documentElement.classList.add('dark');
+                console.log('✅ PLOS initialized – Language Learning Workflow (Universal) added. All cards collapsed by default.');
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
