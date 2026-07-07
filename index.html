@@ -6,27 +6,6 @@
     <title>PLOS - Personal Learning Operating System</title>
     <style>
         :root {
-            --bg: #f8f9fa;
-            --surface: #ffffff;
-            --surface2: #f1f3f5;
-            --text: #212529;
-            --text2: #495057;
-            --text3: #6c757d;
-            --border: #dee2e6;
-            --accent: #2563eb;
-            --accent2: #1d4ed8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-            --shadow2: 0 4px 16px rgba(0, 0, 0, 0.12);
-            --radius: 10px;
-            --radius-sm: 6px;
-            --sidebar-w: 280px;
-            --transition: 0.22s ease;
-            --font: 'Segoe UI', 'Vazirmatn', Tahoma, sans-serif;
-        }
-        .dark {
             --bg: #0f1117;
             --surface: #1a1d27;
             --surface2: #222636;
@@ -36,8 +15,29 @@
             --border: #2d3142;
             --accent: #60a5fa;
             --accent2: #93bbfc;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
             --shadow2: 0 4px 16px rgba(0, 0, 0, 0.6);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --sidebar-w: 280px;
+            --transition: 0.22s ease;
+            --font: 'Segoe UI', 'Vazirmatn', Tahoma, sans-serif;
+        }
+        .light {
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --surface2: #f1f3f5;
+            --text: #212529;
+            --text2: #495057;
+            --text3: #6c757d;
+            --border: #dee2e6;
+            --accent: #2563eb;
+            --accent2: #1d4ed8;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow2: 0 4px 16px rgba(0, 0, 0, 0.12);
         }
         * {
             box-sizing: border-box;
@@ -316,33 +316,32 @@
             border-left: 3px solid var(--accent);
         }
         .card-body .fallback-box {
-            background: #fef3c7;
-            border: 1px solid #fcd34d;
+            background: #2d2410;
+            border: 1px solid #b45309;
             padding: 12px;
             border-radius: var(--radius-sm);
             margin: 10px 0;
-            color: #92400e;
-        }
-        .dark .card-body .fallback-box {
-            background: #2d2410;
-            border-color: #b45309;
             color: #fcd34d;
         }
+        .light .card-body .fallback-box {
+            background: #fef3c7;
+            border-color: #fcd34d;
+            color: #92400e;
+        }
         .card-body .golden-rule-box {
-            background: #e8f5e9;
+            background: #0d2818;
             border: 2px solid #10b981;
             padding: 16px 20px;
             border-radius: var(--radius);
             margin: 12px 0;
-            color: #065f46;
+            color: #6ee7b7;
             font-weight: 500;
             font-size: 0.95em;
             line-height: 2;
         }
-        .dark .card-body .golden-rule-box {
-            background: #0d2818;
-            border-color: #10b981;
-            color: #6ee7b7;
+        .light .card-body .golden-rule-box {
+            background: #e8f5e9;
+            color: #065f46;
         }
         .golden-rule-box .rule-number {
             display: inline-block;
@@ -370,18 +369,18 @@
             color: var(--text3);
         }
         .card-body .rule-box {
-            background: #e3f2fd;
-            border: 2px solid #2563eb;
+            background: #1e293b;
+            border: 2px solid #60a5fa;
             padding: 14px 18px;
             border-radius: var(--radius);
             margin: 10px 0;
-            color: #1e40af;
+            color: #93bbfc;
             font-weight: 500;
         }
-        .dark .card-body .rule-box {
-            background: #1e293b;
-            border-color: #60a5fa;
-            color: #93bbfc;
+        .light .card-body .rule-box {
+            background: #e3f2fd;
+            border-color: #2563eb;
+            color: #1e40af;
         }
         .philosophy-block {
             text-align: center;
@@ -393,6 +392,18 @@
             border: 2px solid var(--accent);
             color: var(--text);
             font-weight: 500;
+        }
+        .contact-block {
+            text-align: center;
+            padding: 20px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .contact-block a {
+            color: var(--accent);
+            text-decoration: none;
         }
         .progress-section {
             margin-bottom: 16px;
@@ -467,29 +478,32 @@
             display: none !important;
         }
         mark {
-            background: #fef08a;
+            background: #854d0e;
+            color: #fef08a;
             padding: 1px 3px;
             border-radius: 2px;
         }
-        .dark mark {
-            background: #854d0e;
-            color: #fef08a;
+        .light mark {
+            background: #fef08a;
+            color: #000;
         }
     </style>
 </head>
-<body>
+<body class="dark">
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <span class="logo">📚 PLOS</span>
         </div>
         <nav class="sidebar-nav" id="sidebarNav">
-            <a href="#sec-tools" data-section="tools">🔧 Tools</a>
+            <a href="#sec-contact" data-section="contact">📞 Contact</a>
+            <a href="#sec-philosophy" data-section="philosophy">💡 Personal Philosophy</a>
             <a href="#sec-language-workflow" data-section="language-workflow">🌐 Language Workflow</a>
-            <a href="#sec-techniques" data-section="techniques">🧠 Learning Techniques</a>
+            <a href="#sec-dual-layer-knowledge" data-section="dual-layer-knowledge">🗂️ Dual-Layer Knowledge</a>
             <a href="#sec-finder" data-section="finder">🔍 Tool Finder</a>
             <a href="#sec-backup" data-section="backup">💾 Backup Strategy</a>
-            <a href="#sec-philosophy" data-section="philosophy">💡 Personal Philosophy</a>
+            <a href="#sec-techniques" data-section="techniques">🧠 Learning Techniques</a>
+            <a href="#sec-tools" data-section="tools">🔧 Tools</a>
         </nav>
         <div class="sidebar-footer">
             <div class="progress-mini">
@@ -497,7 +511,7 @@
                 <div class="bar-track"><div class="bar-fill" id="totalProgressBar" style="width:0%"></div></div>
                 <span id="totalProgressText">0%</span>
             </div>
-            <button class="btn" id="btnDarkMode" style="width:100%;">🌙 Dark Mode</button>
+            <button class="btn" id="btnDarkMode" style="width:100%;">☀️ Light Mode</button>
             <button class="btn" id="btnExpandAll" style="width:100%;">📂 Expand All</button>
             <button class="btn" id="btnCollapseAll" style="width:100%;">📁 Collapse All</button>
         </div>
@@ -531,6 +545,7 @@
                 id: 'anki',
                 name: 'Anki',
                 icon: '🃏',
+                download: 'https://apps.ankiweb.net/',
                 intro: 'Open-source flashcard software based on Spaced Repetition, created by Damien Elmes. Anki is the most powerful tool for committing large volumes of information to long-term memory.',
                 usage: 'Create digital flashcards with text, images, audio, and video. The SM-2 and FSRS algorithms schedule each card review exactly before you forget it.',
                 why: 'The core of my learning system. I convert all knowledge extracted from books, courses, and conversations into cards, and Anki ensures nothing is forgotten.',
@@ -559,6 +574,7 @@
                 id: 'yomiwa',
                 name: 'Yomiwa',
                 icon: '🇯🇵',
+                download: 'https://play.google.com/store/apps/details?id=com.yomiwa.yomiwa',
                 intro: 'Offline Japanese-English dictionary with OCR (Optical Character Recognition) for reading Japanese text from images or live camera. A complete Japanese reading and learning assistant.',
                 usage: 'Reading Japanese books, menus, and signs with the camera. Text analysis and word extraction for flashcards. Furigana generation over kanji. Note: Yomiwa also has its own built-in spaced repetition flashcard system, and you can export cards directly to Anki from within the app.',
                 why: 'My bridge between reading Japanese text and understanding it. Without Yomiwa, reading a single page of a Japanese book would take hours.',
@@ -589,7 +605,8 @@
                 id: 'akebi',
                 name: 'Akebi Dictionary',
                 icon: '📖',
-                intro: ' Lightweight offline Japanese dictionary with a beautiful interface and advanced search via radical, handwriting, and examples. Can be used on almost any other app via Share/Switch.',
+                download: 'https://play.google.com/store/apps/details?id=com.craxic.akebifree',
+                intro: 'Lightweight offline Japanese dictionary with a beautiful interface and advanced search via radical, handwriting, and examples. Can be used on almost any other app via Share/Switch.',
                 usage: 'Quick Japanese word lookup, learning kanji through radicals, handwriting input to find unknown kanji. Select text in any app and share it to Akebi for instant analysis.',
                 why: 'When Yomiwa is unavailable or I need deeper searching, Akebi is superb with its radical and handwriting search system. Also works as a quick popup analyzer from any app.',
                 when: 'When you see a kanji but don\'t know its pronunciation — draw it in Akebi to find it. When reading in a browser or PDF, select text and share to Akebi.',
@@ -613,6 +630,7 @@
                 id: 'kanjidojo',
                 name: 'Kanji Dojo',
                 icon: '🈶',
+                download: 'https://play.google.com/store/apps/details?id=org.kaqui',
                 intro: 'An app for practicing writing kana (hiragana & katakana) and kanji with emphasis on correct stroke order and interactive quizzes. Covers JLPT N5 to N1.',
                 usage: 'Learn and practice writing Japanese characters from basic to advanced. Track progress for each kanji. Includes vocabulary training, reading mode, and writing mode with handwriting recognition.',
                 why: 'Physically writing kanji is the best method to cement it in memory. Kanji Dojo makes learning precise by correcting stroke order. It covers almost everything needed for kanji and writing.',
@@ -638,6 +656,7 @@
                 id: 'googletranslate',
                 name: 'Google Translate Offline',
                 icon: '🌐',
+                download: 'https://play.google.com/store/apps/details?id=com.google.android.apps.translate',
                 intro: 'Offline version of Google Translate with downloadable language packs for use without internet. Translates text, voice, and images. Can float over other apps and show popup translations.',
                 usage: 'Quick translation of texts, conversations, and images in offline mode. Can hover over other apps and translate selected text instantly.',
                 why: 'When traveling or without internet, this tool is a lifesaver. Offline packs are small and cover the entire dictionary. The popup translation feature is invaluable for quick lookups. Works for many languages as a universal fallback.',
@@ -661,6 +680,7 @@
                 id: 'moonreader',
                 name: 'Moon+ Reader',
                 icon: '📱',
+                download: 'https://play.google.com/store/apps/details?id=com.flyersoft.moonreader',
                 intro: 'The most powerful Android ebook reader supporting multiple formats, with a Highlight system, built-in dictionary, and full customization.',
                 usage: 'Read ebooks in EPUB, PDF, MOBI, and other formats. Highlight text, look up words in the dictionary, and take notes.',
                 why: 'All my reference books are in this app. The critical reason Moon+ Reader is in my system: when I hold on text (long-press to select), the Android system share menu immediately offers to switch to Anki (to create a card), Yomiwa (for dictionary lookup), Akebi (for dictionary lookup), and Google Translate — all without leaving the book. This seamless inter-app handoff makes studying 10x faster. Without this hold-to-share integration, I would waste time copying/pasting between apps.',
@@ -688,6 +708,7 @@
                 id: 'typora',
                 name: 'Typora',
                 icon: '📝',
+                download: 'https://typora.io/',
                 intro: 'A Markdown editor with live preview (WYSIWYG) that makes writing technical documentation, notes, and books a pleasure. Can be set as the default Markdown editor in Windows, supports custom CSS, and allows RTL formatting for Persian text.',
                 usage: 'Write and edit Markdown files with instant preview. Supports tables, diagrams, math formulas, and export to various formats.',
                 why: 'All my learning documentation is written in Typora. The combination of Markdown + live preview = incredible writing speed. Custom CSS support lets me format Persian text and customize the appearance.',
@@ -717,6 +738,7 @@
                 id: 'taskcoach',
                 name: 'Task Coach',
                 icon: '✅',
+                download: 'https://www.taskcoach.org/',
                 intro: 'Open-source task management software with tree structure, allowing Task and Subtask definition, progress tracking, and time management.',
                 usage: 'Break large projects into small tasks, set priorities, attach files, and track the progress percentage of each task. Manage multiple projects simultaneously.',
                 why: 'For complex projects like learning hacking or networking, Task Coach provides structure and order. Without it, I get lost in the volume of work.',
@@ -744,6 +766,7 @@
                 id: 'xmind',
                 name: 'XMind',
                 icon: '🗺️',
+                download: 'https://www.xmind.net/',
                 intro: 'Professional mind mapping software supporting various diagram types: Mind Map, Fishbone, Tree, Timeline, and Logic Chart.',
                 usage: 'Draw mind maps to organize ideas, plan projects, brainstorm, and document relationships between concepts. Design roadmaps and break large goals into smaller steps.',
                 why: 'My mind works better with visuals. XMind helps me see connections between complex concepts and understand the structure of knowledge.',
@@ -954,6 +977,107 @@ const LANGUAGE_WORKFLOW_DATA = {
     `
 };
 
+const DUAL_LAYER_KNOWLEDGE_DATA = {
+    id: 'dual-layer-knowledge',
+    title: '🗂️ Dual-Layer Knowledge System (Map + Warehouse)',
+    content: `
+    <h3>📌 Why This System Exists</h3>
+    <p>Not all knowledge can be compressed into a tree list. Some things are <strong>processes</strong>, some are <strong>detailed scenarios</strong>, and some lose all meaning if reduced to a one-line hook. Forcing everything into a single format is a mistake. This dual-layer system solves that by giving each type of knowledge the <strong>right container</strong>.</p>
+    <div class="highlight"><strong>Core insight:</strong> "For everything, a tree list won't work. That's why I use two techniques." — Isao</div>
+
+    <h3>🗺️ Layer 1: The Map (Index & Hooks)</h3>
+    <p>This is a <strong>lightweight tree list</strong> — just file names and a one-sentence hook per topic. It's designed for <strong>rapid orientation, quick recall, and decision-making</strong> about what to study next.</p>
+    <ul>
+        <li><strong>Format:</strong> A simple Markdown file or XMind branch with topic names and a short hook (1–2 sentences max).</li>
+        <li><strong>Purpose:</strong> Give you a bird's-eye view of the entire knowledge domain in under 30 seconds.</li>
+        <li><strong>When to use:</strong> 80% of the time. When you need to remember what exists, what to study next, or trigger a memory chain.</li>
+        <li><strong>Example:</strong><br>
+            <code>4-dns-L7.md → Phonebook of the Internet</code><br>
+            <code>4-dhcp-L7.md → Hotel reception (DORA)</code><br>
+            <code>11-DMZ.md → Neutral zone between two fires</code></li>
+        <li><strong>Weight:</strong> A few kilobytes. Fits anywhere.</li>
+    </ul>
+    <div class="highlight"><strong>🧠 Hook Learning in action:</strong> Each hook is a mental trigger. When you encounter a real problem (e.g., DHCP failure), the hook "Hotel reception (DORA)" instantly fires, and you know exactly where to look for details. The hook doesn't store the knowledge — it stores the <em>path</em> to the knowledge.</div>
+
+    <h3>🏗️ Layer 2: The Warehouse (Full Documents)</h3>
+    <p>This is the <strong>complete, detailed archive</strong> — the original 25 files (or however many) with full explanations, scenarios, configurations, and appendices. Nothing is deleted or compressed.</p>
+    <ul>
+        <li><strong>Format:</strong> Full Markdown files in a folder (e.g., <code>network/</code>).</li>
+        <li><strong>Purpose:</strong> Deep study, debugging, and retrieving precise details when the hook isn't enough.</li>
+        <li><strong>When to use:</strong> 20% of the time. When a hook fires and you think "I need the full picture" — open the file and dive deep. Also when you're learning a topic for the first time.</li>
+        <li><strong>Weight:</strong> Can be large (megabytes). Stored on disk, not in active memory.</li>
+    </ul>
+    <div class="highlight"><strong>📂 The Warehouse is never thrown away.</strong> It sits patiently in its folder, ready to be opened when needed. You don't carry it in your head — you carry only the Map. The Warehouse is your external brain.</div>
+
+    <h3>🔄 How the Two Layers Work Together</h3>
+    <div class="rule-box">
+        <strong>Daily operation (80% of the time):</strong><br>
+        1. Glance at <strong>The Map</strong> (tree list with hooks).<br>
+        2. Identify which topic is relevant right now.<br>
+        3. The hook triggers a partial memory.<br>
+        4. If the hook is enough → act immediately.<br>
+        5. If more detail is needed → open <strong>The Warehouse</strong> file.<br>
+        6. After extracting what you need, close the file. Don't re-read the whole thing.
+    </div>
+
+    <h3>🎯 Just-in-Time vs Just-in-Case Learning</h3>
+    <p>This dual-layer system is the technical implementation of a deeper philosophy:</p>
+    <ul>
+        <li><strong>Just-in-Case Learning:</strong> Read everything upfront, memorize all details, "just in case" you need them someday. This is what schools do. It overloads the brain and wastes time.</li>
+        <li><strong>Just-in-Time Learning:</strong> Know <em>what exists</em> (The Map), and when a real problem appears, pull the exact details you need (from The Warehouse or AI). This is what hackers and engineers do in the field.</li>
+    </ul>
+    <div class="highlight"><strong>You have moved from Just-in-Case to Just-in-Time.</strong> The Map gives you the index. AI (DeepSeek) gives you on-demand depth. The Warehouse is the offline safety net. Together, they mean you can enter the operational environment <em>immediately</em>, not after months of theoretical study.</div>
+
+    <h3>📁 Recommended Folder Structure</h3>
+    <p>For each knowledge domain (e.g., Network, Hacking, Programming), create this structure:</p>
+    <div class="highlight">
+        <code>network/</code><br>
+        ├── <code>_map.md</code> ← <strong>The Map:</strong> tree list with hooks (lightweight, always open)<br>
+        └── <code>_docs/</code> ← <strong>The Warehouse:</strong> full detailed files<br>
+            ├── 4-dns-L7.md<br>
+            ├── 4-dhcp-L7.md<br>
+            ├── 4-tls-handshake.md<br>
+            └── ...
+    </div>
+    <p>The underscore prefix (<code>_map</code>, <code>_docs</code>) keeps these meta-folders at the top of file listings.</p>
+
+    <h3>🛡️ Anti-Fragility of This System</h3>
+    <ul>
+        <li><strong>If you lose the Warehouse:</strong> The Map still exists. You can regenerate the details by asking AI with the hooks as prompts.</li>
+        <li><strong>If you lose the Map:</strong> The Warehouse still exists. You can rebuild the Map by scanning file names and extracting one hook per file.</li>
+        <li><strong>If you lose both:</strong> You still have the 10-letter password and cloud backups (Telegram, GitHub). Nothing is truly lost.</li>
+    </ul>
+    <div class="highlight"><strong>🔑 The Golden Rule of the Dual-Layer System:</strong> The Map is your compass. The Warehouse is your library. AI is your librarian. You are the explorer. None of them replaces the other — they multiply each other's power.</div>
+
+    <h3>📊 Real-World Example: Network Knowledge</h3>
+    <p><strong>Before (old system):</strong> 90 scattered files → mental overload → "I haven't read them all, I'm behind" → paralysis.</p>
+    <p><strong>After (dual-layer system):</strong></p>
+    <ol>
+        <li><strong>The Map:</strong> A single <code>_map.md</code> with 25 lines, each containing a protocol name and a hook.</li>
+        <li><strong>The Warehouse:</strong> 25 files in <code>_docs/</code>, each with full details, scenarios, and appendices.</li>
+        <li><strong>Daily use:</strong> Glance at the Map (10 seconds). If a hook is relevant, open its file. Otherwise, move on.</li>
+        <li><strong>Result:</strong> From "90 files I haven't read" (anxiety) to "25 hooks I can navigate in seconds" (control).</li>
+    </ol>
+    <div class="rule-box">
+        <strong>📏 When to use which layer — Decision Rule:</strong><br>
+        • <strong>Map only:</strong> Reviewing what you know, planning what to study next, quick memory refresh.<br>
+        • <strong>Warehouse only:</strong> First-time deep study of a new topic, debugging a complex issue.<br>
+        • <strong>Map → AI:</strong> Hook fires → ask AI for details → get answer in 30 seconds. The fastest path.<br>
+        • <strong>Map → Warehouse:</strong> Hook fires → open the file → read the full scenario. For when AI is unavailable or you need offline depth.
+    </div>
+
+    <h3>♾️ Integration with the Rest of PLOS</h3>
+    <p>This dual-layer system is not a separate tool. It's a <strong>structural pattern</strong> that applies to every knowledge domain in your life:</p>
+    <ul>
+        <li><strong>Network:</strong> Map (hooks for 25 protocols) + Warehouse (full .md files)</li>
+        <li><strong>Hacking:</strong> Map (attack types, tools, CVEs) + Warehouse (detailed writeups, scripts)</li>
+        <li><strong>Programming:</strong> Map (concepts, patterns, snippets) + Warehouse (full projects, documentation)</li>
+        <li><strong>Languages:</strong> Map (grammar points, vocabulary groups) + Warehouse (full lessons, example sentences)</li>
+    </ul>
+    <p>The Map is what you review daily. The Warehouse is what you consult when needed. <strong>This is how a ninja carries knowledge: light, fast, and deadly.</strong></p>
+    `
+};
+
             const TECHNIQUES_DATA = [
                 { id: 'selfhypnosis', name: 'Self Hypnosis',
                     desc: 'A technique for penetrating the subconscious mind through suggestion in a trance state. By lowering brain waves to the alpha/theta state, the resistance of the conscious mind is bypassed and new beliefs are planted directly in the subconscious. Problem solved: Limiting beliefs and negative habits that cannot be changed with logic alone. How to use: In a quiet environment, breathe deeply until reaching a trance state, then repeat positive suggestions. Advantages: Deep belief change, reduced stress, increased confidence. Disadvantages: Requires consistent practice, gradual results. Example: The suggestion "I am improving every day" repeated every night before sleep. Resources: Book "Self-Hypnosis" by Maxwell Maltz.' },
@@ -1069,19 +1193,20 @@ const LANGUAGE_WORKFLOW_DATA = {
             ];
 
             // ==================== STATE MANAGEMENT ====================
-            const STORAGE_KEY = 'plos_state_v7_en';
+            const STORAGE_KEY = 'plos_state_v11_en';
 
             function getDefaultState() {
                 const state = {
-                    darkMode: false,
+                    darkMode: true,
                     checkedTools: {},
                     checkedTechniques: {},
                     openCards: {},
-                    activeSection: 'tools',
+                    activeSection: 'contact',
                 };
                 TOOLS_DATA.forEach(t => { state.openCards['tool_' + t.id] = false; });
                 TECHNIQUES_DATA.forEach(t => { state.openCards['tech_' + t.id] = false; });
                 state.openCards['language_workflow_card'] = false;
+                state.openCards['dual_layer_knowledge_card'] = false;
                 state.openCards['backup_section'] = false;
                 state.openCards['finder_section'] = false;
                 return state;
@@ -1118,46 +1243,16 @@ const LANGUAGE_WORKFLOW_DATA = {
                 const container = document.getElementById('dynamicContent');
                 let html = '';
 
-                // Section: Tools
-                html += '<div class="section" id="sec-tools"><h2>🔧 Tools</h2>';
-                TOOLS_DATA.forEach(tool => {
-                    const cid = 'tool_' + tool.id;
-                    const isOpen = appState.openCards[cid] === true;
-                    const isChecked = appState.checkedTools[tool.id] === true;
-                    html += renderCard(cid, tool.icon + ' ' + tool.name, isOpen, isChecked, renderToolBody(tool), 'tool');
-                });
-                html += '</div>';
+                // 1. Contact
+                html += '<div class="section" id="sec-contact"><h2>📞 Contact</h2>';
+                html += '<div class="contact-block">';
+                html += '<p><strong>Telegram:</strong> <a href="https://t.me/silent_exploit00en00jp">@silent_exploit00en00jp</a></p>';
+                html += '<p><strong>Instagram:</strong> <a href="https://instagram.com/isao_pouty">@isao_pouty</a></p>';
+                html += '<p><strong>Phone:</strong> +989927750043</p>';
+                html += '<p><strong>Email:</strong> ag062062zero@gmail.com</p>';
+                html += '</div></div>';
 
-                // Section: Language Learning Workflow
-                html += '<div class="section" id="sec-language-workflow"><h2>🌐 Language Learning Workflow</h2>';
-                const lwfCid = 'language_workflow_card';
-                const lwfIsOpen = appState.openCards[lwfCid] === true;
-                html += renderCard(lwfCid, LANGUAGE_WORKFLOW_DATA.title, lwfIsOpen, false, LANGUAGE_WORKFLOW_DATA.content, 'workflow');
-                html += '</div>';
-
-                // Section: Techniques
-                html += '<div class="section" id="sec-techniques"><h2>🧠 Learning Techniques</h2>';
-                TECHNIQUES_DATA.forEach(tech => {
-                    const cid = 'tech_' + tech.id;
-                    const isOpen = appState.openCards[cid] === true;
-                    const isChecked = appState.checkedTechniques[tech.id] === true;
-                    html += renderCard(cid, tech.name, isOpen, isChecked, renderTechniqueBody(tech), 'technique');
-                });
-                html += '</div>';
-
-                // Section: Tool Finder
-                html += '<div class="section" id="sec-finder"><h2>🔍 Tool Finder</h2>';
-                html += renderCard('finder_section', 'If I Forget the Tool Name, What Should I Search For?',
-                    appState.openCards['finder_section'] === true, false, renderFinderBody(), 'finder');
-                html += '</div>';
-
-                // Section: Backup Strategy
-                html += '<div class="section" id="sec-backup"><h2>💾 Backup Strategy</h2>';
-                html += renderCard('backup_section', 'How to Backup & Restore Data for Each Tool',
-                    appState.openCards['backup_section'] === true, false, renderBackupBody(), 'backup');
-                html += '</div>';
-
-                // Section: Personal Philosophy
+                // 2. Personal Philosophy
                 html += '<div class="section" id="sec-philosophy"><h2>💡 Personal Philosophy</h2>';
                 html += '<div class="philosophy-block">';
                 html += 'The tool is only a means.<br>';
@@ -1169,6 +1264,52 @@ const LANGUAGE_WORKFLOW_DATA = {
                 html += 'If the information is gone, extract it again.<br>';
                 html += 'If you acquire the skill, no one can take it away from you.<br>';
                 html += '</div></div>';
+
+                // 3. Language Workflow
+                html += '<div class="section" id="sec-language-workflow"><h2>🌐 Language Learning Workflow</h2>';
+                const lwfCid = 'language_workflow_card';
+                const lwfIsOpen = appState.openCards[lwfCid] === true;
+                html += renderCard(lwfCid, LANGUAGE_WORKFLOW_DATA.title, lwfIsOpen, false, LANGUAGE_WORKFLOW_DATA.content, 'workflow');
+                html += '</div>';
+
+                // 4. Dual-Layer Knowledge
+                html += '<div class="section" id="sec-dual-layer-knowledge"><h2>🗂️ Dual-Layer Knowledge System</h2>';
+                const dlkCid = 'dual_layer_knowledge_card';
+                const dlkIsOpen = appState.openCards[dlkCid] === true;
+                html += renderCard(dlkCid, DUAL_LAYER_KNOWLEDGE_DATA.title, dlkIsOpen, false, DUAL_LAYER_KNOWLEDGE_DATA.content, 'workflow');
+                html += '</div>';
+
+                // 5. Tool Finder
+                html += '<div class="section" id="sec-finder"><h2>🔍 Tool Finder</h2>';
+                html += renderCard('finder_section', 'If I Forget the Tool Name, What Should I Search For?',
+                    appState.openCards['finder_section'] === true, false, renderFinderBody(), 'finder');
+                html += '</div>';
+
+                // 6. Backup Strategy
+                html += '<div class="section" id="sec-backup"><h2>💾 Backup Strategy</h2>';
+                html += renderCard('backup_section', 'How to Backup & Restore Data for Each Tool',
+                    appState.openCards['backup_section'] === true, false, renderBackupBody(), 'backup');
+                html += '</div>';
+
+                // 7. Techniques
+                html += '<div class="section" id="sec-techniques"><h2>🧠 Learning Techniques</h2>';
+                TECHNIQUES_DATA.forEach(tech => {
+                    const cid = 'tech_' + tech.id;
+                    const isOpen = appState.openCards[cid] === true;
+                    const isChecked = appState.checkedTechniques[tech.id] === true;
+                    html += renderCard(cid, tech.name, isOpen, isChecked, renderTechniqueBody(tech), 'technique');
+                });
+                html += '</div>';
+
+                // 8. Tools
+                html += '<div class="section" id="sec-tools"><h2>🔧 Tools</h2>';
+                TOOLS_DATA.forEach(tool => {
+                    const cid = 'tool_' + tool.id;
+                    const isOpen = appState.openCards[cid] === true;
+                    const isChecked = appState.checkedTools[tool.id] === true;
+                    html += renderCard(cid, tool.icon + ' ' + tool.name, isOpen, isChecked, renderToolBody(tool), 'tool');
+                });
+                html += '</div>';
 
                 container.innerHTML = html;
                 updateProgressBars();
@@ -1215,6 +1356,7 @@ const LANGUAGE_WORKFLOW_DATA = {
                     h += `<li><strong>${fb.name}:</strong> ${fb.desc}</li>`;
                 });
                 h += `</ol></div>`;
+                h += `<h3>🔗 Download</h3><p><a href="${tool.download}" target="_blank" rel="noopener noreferrer">Official Link</a></p>`;
                 h += `<p><strong>🔍 If I forget the name, search for:</strong> <em>${tool.searchTerms}</em></p>`;
                 return h;
             }
@@ -1286,10 +1428,12 @@ const LANGUAGE_WORKFLOW_DATA = {
             // ==================== DARK MODE ====================
             function updateDarkModeUI() {
                 if (appState.darkMode) {
-                    document.documentElement.classList.add('dark');
+                    document.body.classList.add('dark');
+                    document.body.classList.remove('light');
                     document.getElementById('btnDarkMode').textContent = '☀️ Light Mode';
                 } else {
-                    document.documentElement.classList.remove('dark');
+                    document.body.classList.add('light');
+                    document.body.classList.remove('dark');
                     document.getElementById('btnDarkMode').textContent = '🌙 Dark Mode';
                 }
             }
@@ -1397,7 +1541,7 @@ const LANGUAGE_WORKFLOW_DATA = {
             function updateSidebarActive() {
                 const links = document.querySelectorAll('#sidebarNav a');
                 links.forEach(l => l.classList.remove('active'));
-                const active = appState.activeSection || 'tools';
+                const active = appState.activeSection || 'contact';
                 const activeLink = document.querySelector(`#sidebarNav a[data-section="${active}"]`);
                 if (activeLink) activeLink.classList.add('active');
             }
@@ -1431,8 +1575,11 @@ const LANGUAGE_WORKFLOW_DATA = {
                 document.getElementById('btnDarkMode').addEventListener('click', toggleDarkMode);
                 document.getElementById('btnExpandAll').addEventListener('click', expandAll);
                 document.getElementById('btnCollapseAll').addEventListener('click', collapseAll);
-                document.getElementById('menuToggle').addEventListener('click', function() { document.getElementById(
-                        'sidebar').classList.toggle('open'); });
+                // FIXED: stop propagation to prevent immediate close
+                document.getElementById('menuToggle').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    document.getElementById('sidebar').classList.toggle('open');
+                });
                 document.getElementById('sidebarNav').addEventListener('click', function(e) { const link = e.target.closest(
                         'a'); if (!link) return;
                     e.preventDefault(); const section = link.getAttribute('data-section'); if (section) scrollToSection(
@@ -1453,7 +1600,7 @@ const LANGUAGE_WORKFLOW_DATA = {
                 let scrollTimeout2;
                 window.addEventListener('scroll', function() { clearTimeout(scrollTimeout2);
                     scrollTimeout2 = setTimeout(() => { const sections = document.querySelectorAll('.section');
-                        let currentSection = 'tools';
+                        let currentSection = 'contact';
                         sections.forEach(s => { const rect = s.getBoundingClientRect(); if (rect.top <= 150)
                                 currentSection = s.id.replace('sec-', ''); }); if (appState.activeSection !==
                             currentSection) { appState.activeSection = currentSection;
@@ -1465,8 +1612,14 @@ const LANGUAGE_WORKFLOW_DATA = {
                 setupEvents();
                 updateDarkModeUI();
                 updateProgressBars();
-                if (appState.darkMode) document.documentElement.classList.add('dark');
-                console.log('✅ PLOS initialized – Language Learning Workflow (Universal) added. All cards collapsed by default.');
+                if (appState.darkMode) {
+                    document.body.classList.add('dark');
+                    document.body.classList.remove('light');
+                } else {
+                    document.body.classList.add('light');
+                    document.body.classList.remove('dark');
+                }
+                console.log('✅ PLOS initialized – sections reordered, default dark mode.');
             }
 
             init();
