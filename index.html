@@ -504,6 +504,7 @@
             <a href="#sec-backup" data-section="backup">💾 Backup Strategy</a>
             <a href="#sec-techniques" data-section="techniques">🧠 Learning Techniques</a>
             <a href="#sec-tools" data-section="tools">🔧 Tools</a>
+            <a href="#sec-backup-download" data-section="backup-download">📥 Backup Download</a>
         </nav>
         <div class="sidebar-footer">
             <div class="progress-mini">
@@ -1193,7 +1194,7 @@ const DUAL_LAYER_KNOWLEDGE_DATA = {
             ];
 
             // ==================== STATE MANAGEMENT ====================
-            const STORAGE_KEY = 'plos_state_v11_en';
+            const STORAGE_KEY = 'plos_state_v12_en';
 
             function getDefaultState() {
                 const state = {
@@ -1209,6 +1210,7 @@ const DUAL_LAYER_KNOWLEDGE_DATA = {
                 state.openCards['dual_layer_knowledge_card'] = false;
                 state.openCards['backup_section'] = false;
                 state.openCards['finder_section'] = false;
+                state.openCards['backup_download_card'] = false;
                 return state;
             }
 
@@ -1309,6 +1311,15 @@ const DUAL_LAYER_KNOWLEDGE_DATA = {
                     const isChecked = appState.checkedTools[tool.id] === true;
                     html += renderCard(cid, tool.icon + ' ' + tool.name, isOpen, isChecked, renderToolBody(tool), 'tool');
                 });
+                html += '</div>';
+
+                // 9. Backup Download
+                html += '<div class="section" id="sec-backup-download"><h2>📥 Backup Download</h2>';
+                html += renderCard('backup_download_card', '🔐 Access Backup Links', false, false, `
+                    <p>Click the button below and enter the master password to reveal the backup download links. The password is stored in <code>data.json</code> alongside this file.</p>
+                    <button class="btn accent" id="btnAccessBackup">🔐 Prove You Are Isao</button>
+                    <div id="backupLinksContainer" style="margin-top:16px;display:none;"></div>
+                `, 'backup');
                 html += '</div>';
 
                 container.innerHTML = html;
@@ -1607,9 +1618,48 @@ const DUAL_LAYER_KNOWLEDGE_DATA = {
                             updateSidebarActive(); } }, 150); });
             }
 
+            // ==================== BACKUP DOWNLOAD LOGIC ====================
+            function setupBackupDownload() {
+                const btn = document.getElementById('btnAccessBackup');
+                const container = document.getElementById('backupLinksContainer');
+                if (!btn || !container) return;
+
+                btn.addEventListener('click', async function() {
+                    const password = prompt('Enter the master password:');
+                    if (!password) return;
+
+                    try {
+                        const response = await fetch('data.json');
+                        if (!response.ok) throw new Error('Could not load data.json. Make sure it is in the same folder.');
+                        const data = await response.json();
+                        if (data.password === password) {
+                            let html = '<p style="color:#10b981;">✅ Password correct. Below are your backup links:</p>';
+                            html += '<h4>Google Drive</h4><ul>';
+                            data.google_drive.forEach(link => {
+                                html += `<li><a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a> <button class="btn btn-sm" onclick="navigator.clipboard.writeText('${link}');alert('Link copied!')">Copy</button></li>`;
+                            });
+                            html += '</ul><h4>Mega.nz</h4><ul>';
+                            data.mega_nz.forEach(link => {
+                                html += `<li><a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a> <button class="btn btn-sm" onclick="navigator.clipboard.writeText('${link}');alert('Link copied!')">Copy</button></li>`;
+                            });
+                            html += '</ul>';
+                            container.innerHTML = html;
+                            container.style.display = 'block';
+                        } else {
+                            container.innerHTML = '<p style="color:#ef4444;">❌ Incorrect password. Access denied.</p>';
+                            container.style.display = 'block';
+                        }
+                    } catch (err) {
+                        container.innerHTML = `<p style="color:#ef4444;">❌ Error: ${err.message}</p>`;
+                        container.style.display = 'block';
+                    }
+                });
+            }
+
             function init() {
                 renderAll();
                 setupEvents();
+                setupBackupDownload();
                 updateDarkModeUI();
                 updateProgressBars();
                 if (appState.darkMode) {
@@ -1619,7 +1669,7 @@ const DUAL_LAYER_KNOWLEDGE_DATA = {
                     document.body.classList.add('light');
                     document.body.classList.remove('dark');
                 }
-                console.log('✅ PLOS initialized – sections reordered, default dark mode.');
+                console.log('✅ PLOS initialized – Backup Download section added.');
             }
 
             init();
